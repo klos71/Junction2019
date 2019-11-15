@@ -1,7 +1,15 @@
+"""
+	Script for downloading the data for the project
+
+	Sources:
+	https://hri.fi/data/en_GB/dataset/hsl-n-kaupunkipyoraasemat
+	https://hri.fi/data/en_GB/dataset/helsingin-ja-espoon-kaupunkipyorilla-ajatut-matkat
+
+"""
 from urllib.request import urlretrieve
 from pathlib import Path
 
-def download_biketrips(years=range(2016, 2020), months=range(3, 12)):
+def download_biketrips(years=range(2019, 2020), months=range(4, 11)):
 	dir = Path("data")
 	for year in years:
 		for month in months:
