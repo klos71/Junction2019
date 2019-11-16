@@ -140,8 +140,11 @@ export default class App extends Component {
     try {
       await AsyncStorage.setItem("user", user);
       console.log(user);
-
-      this.setState({ user: user });
+      fetch("https://klosbook.klos71.net/create/" + user)
+        .then((res) => res.json())
+        .then((data) => {
+          this.setState({ user: data, loading: false });
+        });
     } catch (err) {
       console.log(err);
     }
