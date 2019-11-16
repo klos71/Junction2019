@@ -19,11 +19,11 @@ calculate_distances <- function(combinations, trips, dur_qt=0.75, dis_qt=0.2) {
 	durs <- c(rep(NA, nrow(combinations)))
 	dists <- c(rep(NA, nrow(combinations)))
 	for (i in 1:nrow(combinations)) {
-		mask <- which(trips["DepartureID"] == combinations$id1[[i]] & trips["ArrivalID"] == combinations$id2[[i]])
+		mask <- which(trips$DepartureID == combinations$id1[[i]] & trips$ArrivalID == combinations$id2[[i]])
 		if (length(mask) < 3)
 			next()
-		times <- trips[["Duration"]][mask]
-		lengths <- trips[["Distance"]][mask]
+		times <- trips$Duration[mask]
+		lengths <- trips$Distance[mask]
 		durs[i] <- unname(quantile(times, dur_qt))
 		dists[i] <- unname(quantile(lengths, dis_qt))
 	}
@@ -37,6 +37,15 @@ calculate_distances <- function(combinations, trips, dur_qt=0.75, dis_qt=0.2) {
 	)))
 }
 
+read_data_trips <- function() {
+	data <- do.call(rbind, lapply(4:10, function(i) {
+		read.csv(sprintf("data/trips-2019-%02d.csv", i), header = TRUE)
+	}))
+	data.frame(Departure = data$Departure, Arrival = data$Return,
+		DepartureID = data$Departure.station.id, ArrivalID = data$Return.station.id,
+		Distance = data$Covered.distance..m., Duration = data$Duration..sec..
+	)
+}
 
 # Only run from Rscript
 if (sys.nframe() == 0L) {
