@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
+var users = [];
+
 var events = {
   events: [
     {
@@ -52,6 +54,22 @@ app.get("/stations", (req, res) => {
     .then((data) => {
       res.jsonp(data);
     });
+});
+
+app.get("/user/:user", (req, res) => {
+  console.log(req.params.user);
+  var found = false;
+  users.map((el) => {
+    if (el.user == req.headers.user) {
+      res.jsonp(el);
+      found = true;
+    }
+  });
+  if (!found) {
+    res.jsonp({ name: req.params.user, id: users.length });
+    users.push({ name: req.params.user, id: users.length });
+  }
+  fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
 });
 
 app.get("/events", (req, res) => {
