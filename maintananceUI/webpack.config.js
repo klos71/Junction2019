@@ -16,7 +16,13 @@ module.exports = {
   devServer: {
     inline: true,
     port: 8000,
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      "/": {
+        target: "http://localhost:3000",
+        pathRewrite: { "^/": "" }
+      }
+    }
   },
   module: {
     rules: [
