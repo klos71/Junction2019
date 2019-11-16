@@ -28,19 +28,12 @@ var events = {
 
 var ongoingEvenets = [];
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "../../build/index.html");
-});
-
 app.get("/stations", (req, res) => {
-  var stations = fs.readFileSync(__dirname + "/csvjson.json");
-  stations = JSON.parse(stations);
-  /*fetch("http://137.135.248.74/api/stations")
+  fetch("http://137.135.248.74/api/stations")
     .then((res) => res.json())
     .then((data) => {
-      stations = data;
-    });*/
-  res.jsonp(stations);
+      res.jsonp(data);
+    });
 });
 
 app.get("/events", (req, res) => {
