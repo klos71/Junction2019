@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -60,7 +59,7 @@ public class BicycleStationService {
                 mission.setTitle("Take Bike here! -> " + underloadedBicycleStation.getName());
                 mission.setDescription("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it to " +underloadedBicycleStation.getName() + " and get 1000 Points!");
                 mission.setDestination(underloadedBicycleStation);
-                mission.setLonDestination(underloadedBicycleStation.getLon());
+                mission.setLngDestination(underloadedBicycleStation.getLng());
                 mission.setLatDestination(underloadedBicycleStation.getLat());
                 mission.setScore(DEFAULT_SCORE);
                 missionRepository.save(mission);
@@ -75,7 +74,7 @@ public class BicycleStationService {
                         .description(m.getDescription())
                         .destination(m.getDestination())
                         .latDestination(m.getLatDestination())
-                        .lonDestination(m.getLonDestination())
+                        .lngDestination(m.getLngDestination())
                         .build();
                 convertedOverloadedStationMissions.add(availableMission);
             }
@@ -85,7 +84,7 @@ public class BicycleStationService {
                         .id(bicycleStation.getId())
                         .name(bicycleStation.getName())
                         .lat(bicycleStation.getLat())
-                        .lon(bicycleStation.getLon())
+                        .lon(bicycleStation.getLng())
                         .maxNumOfSlots(bicycleStation.getMaxNumOfSlots())
                         .currentNumOfBicycles(bicycleStation.getCurrentNumOfBicycles())
                         .missions(null)

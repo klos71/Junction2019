@@ -45,7 +45,7 @@ public class Setup {
                     newStation.setId(Long.parseLong((String) station.get("FID")));
                     newStation.setName((String) station.get("name"));
                     newStation.setLat((String) station.get("Y"));
-                    newStation.setLon((String) station.get("X"));
+                    newStation.setLng((String) station.get("X"));
                     newStation.setMaxNumOfSlots(Integer.parseInt((String) station.get("total_slot")));
                     newStation.setCurrentNumOfBicycles((Integer) parsedData.get("avl_bikes"));
 
