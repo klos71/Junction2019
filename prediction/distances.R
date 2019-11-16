@@ -42,10 +42,12 @@ calculate_distances <- function(combinations, trips, dur_qt=0.75, dis_qt=0.2) {
 if (sys.nframe() == 0L) {
 	source("prediction/station_status.R")
 	source("prediction/predict_bikes.R")
+	print("Reading Data")
 	stations <- read_data_stations(42)
 	trips <- read_data_trips()
 	dir.create("outputs", FALSE, FALSE)
 	write.csv(trips, "outputs/trips.csv", row.names = FALSE)
+	print("Calculating Distances")
 	combs <- id_permutations(stations)$combinations
 	dists <- calculate_distances(combs, trips)$distances
 	write.csv(dists, "outputs/distances.csv", row.names = FALSE)
