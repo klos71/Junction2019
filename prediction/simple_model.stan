@@ -1,11 +1,11 @@
 data {
 	int<lower=0> w;         // number of weeks to use for training the model
 	int<lower=0> s;			// number of stations
-	real D[s, 24*7*w*2];    // the recorded bike deltas for 2w weeks
+	matrix D[s, 24*7*w*2];    // the recorded bike deltas for 2w weeks
 }
 transformed data {
-	real means[s, 24*7];
-	real vars[s, 24*7];
+	matrix means[s, 24*7];
+	matrix vars[s, 24*7];
 
 	for (i in 1:s) {
 		for (j in 1:(24*7)) {
@@ -19,7 +19,7 @@ transformed data {
 	}
 }
 parameters {
-	real B[s, 24*7];
+	matrix B[s, 24*7];
 }
 transformed parameters {
 }
