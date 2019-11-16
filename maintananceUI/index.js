@@ -56,6 +56,7 @@ var events = {
     }
   ]
 };
+var missions = [];
 
 function _calculateDistance(pos1, pos2) {
   var R = 6371; // km
@@ -90,6 +91,37 @@ if (fs.existsSync(__dirname + "/users.json")) {
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/build/index.html");
+});
+
+function getMissions() {
+  fetch("http://137.135.248.74/api/stations")
+    .then((res) => res.json())
+    .then((data) => {
+      data.forEach((el) => {
+        if (el.missions !== null) {
+          el.missions.forEach((mis) => {
+            missions.push({
+              eventID: mis.id,
+              title: mis.title,
+              desc: mis.description,
+              score: mis.score,
+              dest: {
+                lat: mis.destination.lat,
+                lng: mis.destination.lng,
+                name: mis.destination.name
+              },
+              org: { lat: el.lat, lng: el.lng, name: el.name }
+            });
+          });
+        }
+      });
+      console.log("Missions loaded");
+    });
+}
+getMissions();
+
+app.get("/missions", (req, res) => {
+  res.json(missions);
 });
 
 app.get("/stations", (req, res) => {
@@ -178,7 +210,7 @@ app.post("/events", (req, res) => {
         el.km += dist;
         el.kal += Math.round(dist * 24.59);
 
-        el.time += Math.round(dist / 15);
+        el.time += Math.round(dist * 15);
         el.doneEvents.push(reqEvent);
       }
     });

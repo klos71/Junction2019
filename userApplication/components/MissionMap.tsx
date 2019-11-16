@@ -100,6 +100,8 @@ export default class MissionMap extends Component {
                 width: Dimensions.get("window").width,
                 flex: 5
               }}
+              showsUserLocation={true}
+              showsMyLocationButton={true}
             >
               <Marker coordinate={origin} pinColor={"#00cc00"}></Marker>
               <Marker coordinate={destination} pinColor={"#0066ff"}></Marker>
