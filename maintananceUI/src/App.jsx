@@ -25,7 +25,7 @@ export default class App extends Component {
     fetch("https://klosbook.klos71.net/stations")
       .then((res) => res.json())
       .then((data) => {
-        var temp = data.stations;
+        var temp = data;
         temp.forEach((el) => {
           el["dist"] = this._calculateDistance(
             { lat: el.Y, lng: el.X },
