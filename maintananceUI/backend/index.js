@@ -3,6 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const fetch = require("node-fetch");
 
 const app = express();
 const port = 3000;
@@ -10,13 +11,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
-
-var stations;
-fetch("http://137.135.248.74/api/stations")
-  .then((res) => res.json())
-  .then((data) => {
-    stations = data;
-  });
 
 var events = {
   events: [
@@ -34,7 +28,16 @@ var events = {
 
 var ongoingEvenets = [];
 
-app.get("/stations", (req, res) => res.jsonp(stations));
+app.get("/stations", (req, res) => {
+  var stations = fs.readFileSync(__dirname + "/csvjson.json");
+  stations = JSON.parse(stations);
+  /*fetch("http://137.135.248.74/api/stations")
+    .then((res) => res.json())
+    .then((data) => {
+      stations = data;
+    });*/
+  res.jsonp(stations);
+});
 
 app.get("/events", (req, res) => {
   res.json(events);

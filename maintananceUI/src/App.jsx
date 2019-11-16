@@ -22,10 +22,10 @@ export default class App extends Component {
         this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       });
     }
-    fetch("https://klosbook.klos71.net/stations")
+    fetch("http://137.135.248.74/api/stations")
       .then((res) => res.json())
       .then((data) => {
-        var temp = data.stations;
+        var temp = data;
         temp.forEach((el) => {
           el["dist"] = this._calculateDistance(
             { lat: el.Y, lng: el.X },
