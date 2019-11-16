@@ -59,6 +59,10 @@ public class BicycleStationService {
                 mission.setDescription("There are a lot of bike around, please take it at " + bicycleStation.getName() + " and bring it to " + bsDestination.getName());
                 mission.setBicycleStationEntry(bicycleStation);
                 mission.setBicycleStationDestination(bsDestination);
+                mission.setLonEntry(bicycleStation.getLon());
+                mission.setLatEntry(bicycleStation.getLat());
+                mission.setLonDestination(bsDestination.getLon());
+                mission.setLatDestinagtion(bsDestination.getLat());
                 missionRepository.save(mission);
             }
 

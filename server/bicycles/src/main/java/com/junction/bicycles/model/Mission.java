@@ -15,8 +15,12 @@ public class Mission {
     private String description;
     @OneToOne
     private BicycleStation bicycleStationEntry;
+    private String lonEntry;
+    private String latEntry;
     @OneToOne
     private BicycleStation bicycleStationDestination;
+    private String lonDestination;
+    private String latDestinagtion;
 
     public Long getId() {
         return id;
@@ -56,5 +60,37 @@ public class Mission {
 
     public void setBicycleStationDestination(BicycleStation bicycleStationDestination) {
         this.bicycleStationDestination = bicycleStationDestination;
+    }
+
+    public String getLonEntry() {
+        return lonEntry;
+    }
+
+    public void setLonEntry(String lonEntry) {
+        this.lonEntry = lonEntry;
+    }
+
+    public String getLatEntry() {
+        return latEntry;
+    }
+
+    public void setLatEntry(String latEntry) {
+        this.latEntry = latEntry;
+    }
+
+    public String getLonDestination() {
+        return lonDestination;
+    }
+
+    public void setLonDestination(String lonDestination) {
+        this.lonDestination = lonDestination;
+    }
+
+    public String getLatDestinagtion() {
+        return latDestinagtion;
+    }
+
+    public void setLatDestinagtion(String latDestinagtion) {
+        this.latDestinagtion = latDestinagtion;
     }
 }
