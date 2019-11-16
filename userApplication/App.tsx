@@ -20,20 +20,6 @@ import {
   Button
 } from "react-native-paper";
 
-const Home = () => <HomeComponent></HomeComponent>;
-
-const MissionsRoute = () => <Missions></Missions>;
-
-const RecentsRoute = () => <Recent></Recent>;
-
-const ScoreBoardRoute = () => <ScoreBoard></ScoreBoard>;
-
-const ProfileRoute = () => <Profile></Profile>;
-
-const StoreRoute = () => <Store></Store>;
-
-const MissionMapRoute = () => <MissionMap></MissionMap>;
-
 export default class App extends Component {
   state = {
     user: null,
@@ -57,18 +43,48 @@ export default class App extends Component {
       },
       { key: "profile", title: "Profile", icon: "face", color: "#0000ff" },
       { key: "store", title: "Store", icon: "store", color: "#0000ff" }
-    ]
+    ],
+    mission: null
   };
   _handleIndexChange = (index) => this.setState({ index });
+  _handleMissionMap = (mission) => {
+    this.setState({ mission: mission });
+    console.log(mission);
+    this._handleIndexChange(3);
+  };
+
+  _returnMission() {
+    return this.state.mission;
+  }
+
+  MissionMapRoute = () => (
+    <MissionMap
+      getMission={() => this._returnMission()}
+      mission={this.state.mission}
+    ></MissionMap>
+  );
+  Home = () => <HomeComponent></HomeComponent>;
+
+  MissionsRoute = () => (
+    <Missions changeView={(index) => this._handleMissionMap(index)}></Missions>
+  );
+
+  RecentsRoute = () => <Recent></Recent>;
+
+  ScoreBoardRoute = () => <ScoreBoard></ScoreBoard>;
+
+  ProfileRoute = () => <Profile></Profile>;
+
+  StoreRoute = () => <Store></Store>;
 
   _renderScene = BottomNavigation.SceneMap({
-    home: Home,
-    mission: MissionsRoute,
-    recents: RecentsRoute,
-    map: MissionMapRoute,
-    scoreboard: ScoreBoardRoute,
-    profile: ProfileRoute,
-    store: StoreRoute
+    home: this.Home,
+    mission: this.MissionsRoute,
+    recents: this.RecentsRoute,
+    map: this.MissionMapRoute,
+    scoreboard: this.ScoreBoardRoute,
+    profile: this.ProfileRoute,
+    store: this.StoreRoute
   });
 
   async componentWillMount() {
