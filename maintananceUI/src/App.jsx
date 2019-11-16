@@ -22,7 +22,7 @@ export default class App extends Component {
         this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       });
     }
-    fetch("http://137.135.248.74/api/stations")
+    fetch("https://klosbook.klos71.net/stations")
       .then((res) => res.json())
       .then((data) => {
         var temp = data;
