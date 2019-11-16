@@ -127,6 +127,7 @@ app.post("/events", (req, res) => {
         el.doneEvents.push(temp);
       }
     });
+    fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
     console.log(ongoingEvenets);
     res.json(temp);
   }
