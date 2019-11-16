@@ -54,6 +54,8 @@ fit_simple_model <- function(data) {
 	n <- ncol(data) / (24 * 7 * 2)
 	means <- apply(data, 2, function(row) sapply(1:(24*7), function(i) mean(row[seq(i, ncol(data), 24*7)])))
 	vars <- apply(data, 2, function(row) sapply(1:(24*7), function(i) sd(row[seq(i, ncol(data), 24*7)])))
+	vars[is.na(vars)] <- 0.2
+	vars <- vars * 0.9 + 0.2
 	rstan::stan("prediction/simple_model.stan", data = list(D=data, w=n, s=nrow(data), means=means, vars=vars))
 }
 
