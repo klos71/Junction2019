@@ -66,8 +66,20 @@ app.get("/user/:user", (req, res) => {
     }
   });
   if (!found) {
-    res.jsonp({ name: req.params.user, id: users.length });
-    users.push({ name: req.params.user, id: users.length });
+    res.jsonp({
+      name: req.params.user,
+      id: users.length,
+      tokens: 0,
+      score: 0,
+      mission: 0
+    });
+    users.push({
+      name: req.params.user,
+      id: users.length,
+      tokens: 0,
+      score: 0,
+      mission: 0
+    });
   }
   fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
 });
