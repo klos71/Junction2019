@@ -1,6 +1,7 @@
 package com.junction.bicycles.service;
 
-import com.junction.bicycles.model.BSExternal;
+import com.junction.bicycles.dto.BicycleStationDTO;
+import com.junction.bicycles.dto.MissionDTO;
 import com.junction.bicycles.model.BicycleStation;
 import com.junction.bicycles.model.Mission;
 import com.junction.bicycles.repository.BicycleStationRepository;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 
@@ -29,13 +29,10 @@ public class BicycleStationService {
         this.missionRepository = missionRepository;
     }
 
-    //TODO Add predictions
-    public List<BSExternal> getAzurePredictions() {
-        return null;
-    }
+    public List<BicycleStationDTO> getAzurePredictionCall() {
 
-    public List<BicycleStation> createMissions() {
         List<BicycleStation> bicycleStationList = bicycleStationRepository.findAll();
+        List<BicycleStationDTO> convertedStations = new ArrayList<>();
 
         List<BicycleStation> underloadedStations = bicycleStationList.stream()
                 .filter(this::getUnderloadedStation)
@@ -45,30 +42,62 @@ public class BicycleStationService {
                 .filter(this::getOverloadedStations)
                 .collect(Collectors.toList());
 
-        overloadedStations.forEach(bicycleStation -> {
-            List<BicycleStation> underloadedBicycleMissions = new ArrayList<>();
-            Random random = new Random();
-            for (int i = 0; i < 2; i++) {
-                BicycleStation bsMission = overloadedStations.get(random.nextInt(overloadedStations.size()));
-                underloadedBicycleMissions.add(bsMission);
-            }
 
-            for (BicycleStation bsDestination : underloadedBicycleMissions) {
-                Mission mission = new Mission();
-                mission.setTitle("Take Bike From -> " + bicycleStation.getName());
-                mission.setDescription("There are a lot of bike around, please take it at " + bicycleStation.getName() + " and bring it to " + bsDestination.getName());
-                mission.setBicycleStationEntry(bicycleStation);
-                mission.setBicycleStationDestination(bsDestination);
-                mission.setLonEntry(bicycleStation.getLon());
-                mission.setLatEntry(bicycleStation.getLat());
-                mission.setLonDestination(bsDestination.getLon());
-                mission.setLatDestinagtion(bsDestination.getLat());
-                missionRepository.save(mission);
-            }
+        overloadedStations.forEach(overloadedStation -> {
+
+            List<MissionDTO> overloadedStationMissions = new ArrayList<>();
+
+            underloadedStations.forEach(underloadedStation -> {
+
+//                Mission mission = new Mission();
+//                mission.setTitle("Take Bike here! -> " + underloadedStation.getName());
+//                mission.setDescription("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it away and get 1000 Points!");
+//
+//                missionRepository.save(mission);
+
+                MissionDTO availableMission = MissionDTO.builder()
+                        .id(null)
+                        .title("Take Bike here! -> " + underloadedStation.getName())
+                        .description("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it away and get 1000 Points!")
+                        .destination(underloadedStation)
+                        .build();
+
+                overloadedStationMissions.add(availableMission);
+
+            });
+
+            BicycleStationDTO convertedOverloadedStation = BicycleStationDTO.builder()
+                    .id(overloadedStation.getId())
+                    .name(overloadedStation.getName())
+                    .lat(overloadedStation.getLat())
+                    .lon(overloadedStation.getLon())
+                    .maxNumOfSlots(overloadedStation.getMaxNumOfSlots())
+                    .currentNumOfBicycles(overloadedStation.getCurrentNumOfBicycles())
+                    .missions(overloadedStationMissions)
+                    .build();
+
+            convertedStations.add(convertedOverloadedStation);
+        });
+
+        underloadedStations.forEach(underloadedStation -> {
+
+            BicycleStationDTO convertedUnderloadedStation = BicycleStationDTO.builder()
+                    .id(underloadedStation.getId())
+                    .name(underloadedStation.getName())
+                    .lat(underloadedStation.getLat())
+                    .lon(underloadedStation.getLon())
+                    .maxNumOfSlots(underloadedStation.getMaxNumOfSlots())
+                    .currentNumOfBicycles(underloadedStation.getCurrentNumOfBicycles())
+                    .missions(null)
+                    .build();
+
+            convertedStations.add(convertedUnderloadedStation);
 
         });
 
-        return bicycleStationList;
+
+
+        return convertedStations;
     }
 
     /**
