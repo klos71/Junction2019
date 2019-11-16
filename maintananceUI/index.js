@@ -114,32 +114,19 @@ app.get("/events", (req, res) => {
 
 app.post("/events", (req, res) => {
   var name = req.body.name;
-  var eventID = req.body.eventID;
-  var temp = { name: name, eventID: eventID };
+  var reqEvent = req.body.event;
   var found = false;
-  var event = null;
-  events.events.forEach((el) => {
-    ongoingEvenets.forEach((element) => {
-      console.log(element.eventID);
-      console.log(el.eventID);
-      if (element.eventID === el.eventID) {
-        found = true;
-        event = el;
-      }
-    });
+  console.log(name, reqEvent);
+  ongoingEvenets.forEach((el) => {
+    if (el.event.eventID === reqEvent.eventID) {
+      found = true;
+    }
   });
   if (found) {
-    res.json({ error: "This event has already started", event: event });
+    res.json({ error: "Event is already ongoing", event: reqEvent });
   } else {
-    ongoingEvenets.push(temp);
-    users.forEach((el) => {
-      if (el.name === name) {
-        el.doneEvents.push(req.body.event);
-      }
-    });
-    fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
-    console.log(ongoingEvenets);
-    res.json(temp);
+    ongoingEvenets.push({ name: name, event: reqEvent });
+    res.json({ name: name, event: reqEvent });
   }
 });
 
