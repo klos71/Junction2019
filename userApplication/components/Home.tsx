@@ -23,13 +23,25 @@ export default class HomeComponent extends Component {
   constructor(props) {
     super(props);
   }
-  shouldComponentUpdate() {
-    return true;
-  }
 
   async componentWillMount() {
-    this.setState({ user: this.props.user });
+    try {
+      const value = await AsyncStorage.getItem("user");
+      console.log(value);
+
+      if (value !== null) {
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            this.setState({ user: data });
+          });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
+
   _handlePress = () =>
     this.setState({
       expanded: !this.state.howTo

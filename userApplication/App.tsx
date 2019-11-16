@@ -180,6 +180,7 @@ export default class App extends Component {
             navigationState={this.state}
             onIndexChange={this._handleIndexChange}
             renderScene={this._renderScene}
+            key={this.state.updateIndex}
           />
         </PaperProvider>
       );

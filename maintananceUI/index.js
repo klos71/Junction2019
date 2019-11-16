@@ -167,20 +167,18 @@ app.post("/events", (req, res) => {
     users.forEach((el) => {
       console.log(el);
       if (name.name == el.name) {
-        el.score += reqEvent.score;
-        el.tokens += Math.round(reqEvent.score / 10);
-        el.km += Math.round(
+        dist = Math.round(
           _calculateDistance(
             { lat: reqEvent.orgLat, lng: reqEvent.orgLng },
             { lat: reqEvent.Dlat, lng: reqEvent.Dlong }
           )
         );
-        el.kal += Math.round(
-          _calculateDistance(
-            { lat: reqEvent.orgLat, lng: reqEvent.orgLng },
-            { lat: reqEvent.Dlat, lng: reqEvent.Dlong }
-          ) * 5.89
-        );
+        el.score += reqEvent.score;
+        el.tokens += Math.round(reqEvent.score / 10);
+        el.km += dist;
+        el.kal += Math.round(dist * 24.59);
+
+        el.time += Math.round(dist / 15);
         el.doneEvents.push(reqEvent);
       }
     });
