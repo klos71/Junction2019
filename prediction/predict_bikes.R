@@ -61,6 +61,18 @@ fit_simple_model <- function(data) {
 	rstan::stan("prediction/simple_model.stan", data = sdata)
 }
 
+extract_fit <- function(fit, collab, rowlab) {
+	out <- extract(fit, c("lp__", "B"))
+	maxB <- out$B[which.max(out$lp__),,]
+	meanB <- apply(out$B, 2:3, mean)
+	sdB <- apply(out$B, 2:3, sd)
+	collab <- c(paste(collab, "mean"), paste(collab, "max"), paste(collab, "sd"))
+	B <- cbind(meanB, maxB, sdB)
+	colnames(B) <- collab
+	rownames(B) <- rowlab
+	B
+}
+
 
 # Only run from Rscript
 if (sys.nframe() == 0L) {
@@ -69,5 +81,7 @@ if (sys.nframe() == 0L) {
 	index <- which(colnames(binned) == day)
 	data <- binned[, (index - 24*7*12):(index - 1)]
 	fit <- fit_simple_model(data)
-	saveRDS(fit, "outputs/simple_model.rds")
+	saveRDS(fit, "outputs/simple_model.rds", compress="xz")
+	model <- extract_fit(fit, colnames(binned[, index:(index + 24*7 - 1)]), rownames(binned))
+	write.csv(model, "outputs/simple_model.csv")
 }
