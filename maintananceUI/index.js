@@ -120,10 +120,6 @@ function getMissions() {
 }
 getMissions();
 
-app.get("/missions", (req, res) => {
-  res.json(missions);
-});
-
 app.get("/stations", (req, res) => {
   fetch("http://137.135.248.74/api/stations")
     .then((res) => res.json())
@@ -178,7 +174,7 @@ app.get("/users", (req, res) => {
 });
 
 app.get("/events", (req, res) => {
-  res.json(events);
+  res.json(missions);
 });
 
 app.post("/events", (req, res) => {
