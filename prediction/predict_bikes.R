@@ -52,7 +52,7 @@ fit_simple_model <- function(data) {
 	options(mc.cores = parallel::detectCores())
 	rstan_options(auto_write = TRUE)
 	n <- ncol(data) / (24 * 7 * 2)
-	rstan::stan("prediction/simple_model.stan", data = list(D=data, n=n))
+	rstan::stan("prediction/simple_model.stan", data = list(D=data, w=n, s=nrow(data)))
 }
 
 
