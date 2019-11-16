@@ -14,6 +14,6 @@ app.use(cors());
 var stations = fs.readFileSync(__dirname + "/csvjson.json");
 stations = JSON.parse(stations);
 
-app.get("/", (req, res) => res.jsonp(stations));
+app.get("/stations", (req, res) => res.jsonp(stations));
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
