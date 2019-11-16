@@ -9,8 +9,8 @@ transformed data {
 
 	for (i in 1:s) {
 		for (j in 1:(24*7)) {
-			real tmp[n];
-			for (k in 0:(n-1)) {
+			real tmp[w];
+			for (k in 0:(w-1)) {
 				tmp[k+1] = D[i, k * 24 * 7 +j];
 			}
 			means[i, j] = mean(tmp);
