@@ -1,24 +1,20 @@
 data {
-	int<lower=0> n;         // number of weeks to use for training the model
-	real D[n*2, 24*7];      // the recorded bike deltas for 2n weeks
+	int<lower=0> w;         // number of weeks to use for training the model
+	int<lower=0> s;			// number of stations
+	matrix[s, 24*7*w*2] D;  // the recorded bike deltas for 2w weeks
+	matrix[s, 24*7] means;  // the recorded bike deltas for 2w weeks
+	matrix[s, 24*7] vars;  // the recorded bike deltas for 2w weeks
 }
 transformed data {
-	real means[24*7];
-	real vars[24*7];
-
-	for (i in 1:24*7) {
-		means[i] = mean(D[1:n, i])
-		vars[i] = sd(D[1:n, i])
-	}
 }
 parameters {
-	real B[24*7];
+	matrix[s, 24*7] B;
 }
 transformed parameters {
 }
 model {
-	B ~ normal(means, vars);
-	for (i in (n+1):(n*2)) {
-		D[i,] ~ normal(B, vars)
+	to_vector(B) ~ normal(to_vector(means), to_vector(vars));
+	for (i in (w+1):(w*2)) {
+		to_vector(D[,i]) ~ normal(to_vector(B), to_vector(vars));
 	}
 }
