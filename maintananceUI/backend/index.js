@@ -13,6 +13,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
 var users = [];
+if (fs.existsSync(__dirname + "/users.json")) {
+  var temp = fs.readFileSync(__dirname + "/users.json");
+  temp = JSON.parse(temp);
+
+  temp.forEach((el) => {
+    users.push(el);
+  });
+}
 
 var events = {
   events: [
