@@ -11,8 +11,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
 
-var stations = fs.readFileSync(__dirname + "/csvjson.json");
-stations = JSON.parse(stations);
+var stations;
+fetch("http://137.135.248.74/api/stations")
+  .then((res) => res.json())
+  .then((data) => {
+    stations = data;
+  });
 
 var events = {
   events: [
