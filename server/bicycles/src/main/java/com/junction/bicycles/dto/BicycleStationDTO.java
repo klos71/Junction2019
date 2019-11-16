@@ -1,17 +1,16 @@
-package com.junction.bicycles.model;
+package com.junction.bicycles.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import java.util.List;
 
-@Entity
-@Setter
+@Builder
 @Getter
-public class BicycleStation {
+@Setter
+public class BicycleStationDTO {
 
-    @Id
-    @GeneratedValue
     private Long id;
     private String name;
     private String lat;
@@ -19,5 +18,6 @@ public class BicycleStation {
     private Integer maxNumOfSlots;
     private Integer currentNumOfBicycles;
 
-    public BicycleStation() {}
+    private List<MissionDTO> missions;
+
 }
