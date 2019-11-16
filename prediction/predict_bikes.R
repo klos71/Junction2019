@@ -31,6 +31,7 @@ bin_trip_times <- function(data) {
 
 prepare_bins <- function() {
 	if (file.exists("outputs/binned.csv")) {
+		print("Reding binned data")
 		data <- read.csv("outputs/binned.csv", check.names = FALSE)
 		rn <- data[[""]]
 		data <- as.matrix(data[-1])
@@ -47,6 +48,7 @@ prepare_bins <- function() {
 }
 
 fit_simple_model <- function(data) {
+	print("Fitting STAN model")
 	options(mc.cores = parallel::detectCores())
 	rstan_options(auto_write = TRUE)
 	n <- ncol(data) / (24 * 7 * 2)
