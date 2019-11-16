@@ -19,5 +19,6 @@ randomise_bikes <- function(stations) {
 # Only run from Rscript
 if (sys.nframe() == 0L) {
 	data <- read_data_stations()
-	write.csv(data)
+	dir.create("outputs", FALSE, FALSE)
+	write.csv(data, "outputs/stations.csv")
 }
