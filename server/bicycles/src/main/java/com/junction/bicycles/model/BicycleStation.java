@@ -1,14 +1,13 @@
 package com.junction.bicycles.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class BicycleStation {
 
     @Id
+    @GeneratedValue
     private Long id;
     private String name;
     private String lat;
@@ -67,5 +66,13 @@ public class BicycleStation {
 
     public void setCurrentNumOfBicycles(Integer currentNumOfBicycles) {
         this.currentNumOfBicycles = currentNumOfBicycles;
+    }
+
+    public List<Mission> getMissions() {
+        return missions;
+    }
+
+    public void setMissions(List<Mission> missions) {
+        this.missions = missions;
     }
 }
