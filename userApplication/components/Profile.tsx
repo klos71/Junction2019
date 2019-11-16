@@ -53,6 +53,10 @@ export default class Profile extends Component {
           </Paragraph>
           <Paragraph>Score: {this.state.user.score}</Paragraph>
           <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
+          <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
+          <Paragraph>Kalories burnt: {this.state.user.kal}</Paragraph>
+          <Paragraph>Km travled: {this.state.user.km}</Paragraph>
+          <Paragraph>Time spent moving: {this.state.user.time}</Paragraph>
         </View>
       );
     }

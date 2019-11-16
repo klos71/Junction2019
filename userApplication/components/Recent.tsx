@@ -54,7 +54,7 @@ export default class Recent extends Component {
       });
       return (
         <ScrollView style={styles.container}>
-          <Title>Recent</Title>
+          <Title>History</Title>
           {missions}
         </ScrollView>
       );

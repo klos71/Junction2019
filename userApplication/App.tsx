@@ -34,7 +34,7 @@ export default class App extends Component {
         icon: "trophy-award",
         color: "#0000ff"
       },
-      { key: "recents", title: "Recents", icon: "history", color: "#0000ff" },
+      { key: "recents", title: "History", icon: "history", color: "#0000ff" },
       { key: "map", title: "Map", icon: "map", color: "#0000ff" },
       {
         key: "scoreboard",
@@ -49,14 +49,12 @@ export default class App extends Component {
   };
   _handleIndexChange = (index) => this.setState({ index });
   _handleMissionMap = (mission) => {
-    console.log(mission);
     fetch("https://klosbook.klos71.net/events", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        eventID: mission.eventID,
         name: this.state.user,
         event: mission
       })
@@ -81,6 +79,7 @@ export default class App extends Component {
     <MissionMap
       getMission={() => this._returnMission()}
       mission={this.state.mission}
+      changeView={(index) => this._handleIndexChange(index)}
     ></MissionMap>
   );
   Home = () => <HomeComponent></HomeComponent>;
@@ -116,9 +115,11 @@ export default class App extends Component {
     try {
       const value = await AsyncStorage.getItem("user");
       if (value !== null) {
-        fetch("https://klosbook.klos71.net/user/" + value);
-
-        this.setState({ user: value });
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            this.setState({ user: data });
+          });
       }
     } catch (err) {
       console.log(err);
@@ -133,7 +134,11 @@ export default class App extends Component {
     try {
       await AsyncStorage.setItem("user", user);
       console.log(user);
-      this.setState({ user: user });
+      fetch("https://klosbook.klos71.net/user/" + user)
+        .then((res) => res.json())
+        .then((data) => {
+          this.setState({ user: data });
+        });
     } catch (err) {
       console.log(err);
     }
