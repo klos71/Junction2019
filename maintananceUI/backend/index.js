@@ -124,7 +124,7 @@ app.post("/events", (req, res) => {
     ongoingEvenets.push(temp);
     users.forEach((el) => {
       if (el.name === name) {
-        el.doneEvents.push(req.body.mission);
+        el.doneEvents.push(req.body.event);
       }
     });
     fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
