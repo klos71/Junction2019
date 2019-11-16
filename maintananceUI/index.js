@@ -127,6 +127,12 @@ app.post("/events", (req, res) => {
   } else {
     ongoingEvenets.push({ name: name, event: reqEvent });
     res.json({ name: name, event: reqEvent });
+    users.forEach((el) => {
+      if (name.name == el.name) {
+        el.doneEvents.push(reqEvent);
+      }
+    });
+    fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
   }
 });
 
