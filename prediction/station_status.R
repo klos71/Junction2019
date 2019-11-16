@@ -6,7 +6,7 @@ read_data_stations <- function(seed = 42) {
 	data.frame(
 		X = data$X, Y = data$Y, id = data$id, name = data$name,
 		total_slot = data$total_slot, bikes = runif(nrow(data), 0, data$total_slot)
-	)[data$operative]
+	)[data$operative, ]
 }
 
 randomise_bikes <- function(stations) {
