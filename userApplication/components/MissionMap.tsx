@@ -65,8 +65,9 @@ export default class MissionMap extends Component {
   }
   _dismissCompleteModal() {
     this.setState({ complete: false });
-    this.props.forceAppUpdate();
+
     this.props.changeView(0);
+    this.props.forceAppUpdate();
   }
   render() {
     let origin;

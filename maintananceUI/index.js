@@ -31,7 +31,8 @@ var events = {
       orgLng: 24.820099,
       Dstation: "557 Louhentori",
       Dlat: 60.18715,
-      Dlong: 24.796959
+      Dlong: 24.796959,
+      score: 100
     },
     {
       eventID: 1,
@@ -40,7 +41,8 @@ var events = {
       orgLng: 24.804022,
       Dstation: "557 Louhentori",
       Dlat: 60.18715,
-      Dlong: 24.796959
+      Dlong: 24.796959,
+      score: 100
     },
     {
       eventID: 2,
@@ -49,10 +51,30 @@ var events = {
       orgLng: 24.817423,
       Dstation: "557 Louhentori",
       Dlat: 60.18715,
-      Dlong: 24.796959
+      Dlong: 24.796959,
+      score: 100
     }
   ]
 };
+
+function _calculateDistance(pos1, pos2) {
+  var R = 6371; // km
+  var dLat = toRad(pos2.lat - pos1.lat);
+  var dLon = toRad(pos2.lng - pos1.lng);
+  var lat1 = toRad(pos1.lat);
+  var lat2 = toRad(pos2.lat);
+
+  var a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var d = R * c;
+
+  return d;
+}
+function toRad(Value) {
+  return (Value * Math.PI) / 180;
+}
 
 var ongoingEvenets = [];
 
@@ -145,6 +167,20 @@ app.post("/events", (req, res) => {
     users.forEach((el) => {
       console.log(el);
       if (name.name == el.name) {
+        el.score += reqEvent.score;
+        el.tokens += Math.round(reqEvent.score / 10);
+        el.km += Math.round(
+          _calculateDistance(
+            { lat: reqEvent.orgLat, lng: reqEvent.orgLng },
+            { lat: reqEvent.Dlat, lng: reqEvent.Dlong }
+          )
+        );
+        el.kal += Math.round(
+          _calculateDistance(
+            { lat: reqEvent.orgLat, lng: reqEvent.orgLng },
+            { lat: reqEvent.Dlat, lng: reqEvent.Dlong }
+          ) * 5.89
+        );
         el.doneEvents.push(reqEvent);
       }
     });

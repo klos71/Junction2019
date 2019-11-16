@@ -48,7 +48,8 @@ export default class App extends Component {
     ],
     mission: null
   };
-  _handleIndexChange = (index) => this.setState({ index });
+  _handleIndexChange = (index) =>
+    this.setState({ index: index, updateIndex: this.state.updateIndex + 1 });
   _handleMissionMap = (mission) => {
     fetch("https://klosbook.klos71.net/events", {
       method: "POST",
