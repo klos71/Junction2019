@@ -8,9 +8,13 @@ transformed data {
 	real vars[s, 24*7];
 
 	for (i in 1:s) {
-		for (j in 1:24*7) {
-			means[i, j] = mean(D[i, (0:(n-1))*24*7 + j]);
-			vars[i, j] = sd(D[i, (0:(n-1))*24*7 + j]) * 0.9 + 0.2;
+		for (j in 1:(24*7)) {
+			real tmp[n];
+			for (k in 0:(n-1)) {
+				tmp[k+1] = D[i, k * 24 * 7 +j];
+			}
+			means[i, j] = mean(tmp);
+			vars[i, j] = sd(tmp) * 0.9 + 0.2;
 		}
 	}
 }
