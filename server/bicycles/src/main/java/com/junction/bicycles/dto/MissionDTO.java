@@ -16,4 +16,6 @@ public class MissionDTO {
     private Long score;
 
     private BicycleStation destination;
+    private String lonDestination;
+    private String latDestination;
 }

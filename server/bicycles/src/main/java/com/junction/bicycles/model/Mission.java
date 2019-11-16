@@ -22,5 +22,7 @@ public class Mission {
 
     @ManyToOne
     private BicycleStation destination;
+    private String lonDestination;
+    private String latDestination;
 
 }
