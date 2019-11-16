@@ -22,6 +22,24 @@ var events = {
       Dstation: "557 Louhentori",
       Dlat: 60.18715,
       Dlong: 24.796959
+    },
+    {
+      eventID: 1,
+      orgStation: "555 Kalevalantie",
+      orgLat: 60.184765,
+      orgLng: 24.804022,
+      Dstation: "557 Louhentori",
+      Dlat: 60.18715,
+      Dlong: 24.796959
+    },
+    {
+      eventID: 2,
+      orgStation: "527 Otsolahti",
+      orgLat: 60.178655,
+      orgLng: 24.817423,
+      Dstation: "557 Louhentori",
+      Dlat: 60.18715,
+      Dlong: 24.796959
     }
   ]
 };

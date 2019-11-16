@@ -26,9 +26,11 @@ export default class App extends Component {
       .then((res) => res.json())
       .then((data) => {
         var temp = data;
+        console.log(temp);
         temp.forEach((el) => {
+          el["lng"] = el.lon;
           el["dist"] = this._calculateDistance(
-            { lat: el.Y, lng: el.X },
+            { lat: el.lat, lng: el.lng },
             { lat: this.state.lat, lng: this.state.lng }
           ).toFixed(2);
         });
@@ -67,9 +69,10 @@ export default class App extends Component {
     const position = [this.state.lat, this.state.lng];
     let markers = this.state.markers.map((el, index) => {
       return (
-        <Marker position={[el.Y, el.X]} key={index}>
+        <Marker position={[el.lat, el.lng]} key={index}>
           <Popup>
-            Name: {el.data.name} <br /> EmptySlots: {el.data.free_slots}
+            Name: {el.name} <br /> EmptySlots:{" "}
+            {el.maxNumOfSlots - el.currentNumOfBicycles}
             <p>
               Distance: {el.dist}
               Km
@@ -83,19 +86,12 @@ export default class App extends Component {
       return (
         <div
           key={index}
-          onClick={() => this.focusOnStation([el.Y, el.X])}
+          onClick={() => this.focusOnStation([el.lat, el.lng])}
           className='stationsList'
         >
-          <p>Name: {el.data.name}</p>
-          <p>EmptySlots:{el.data.free_slots}</p>
-          <p>
-            Distance:{" "}
-            {this._calculateDistance(
-              { lat: el.Y, lng: el.X },
-              { lat: this.state.lat, lng: this.state.lng }
-            ).toFixed(2)}{" "}
-            Km
-          </p>
+          <p>Name: {el.name}</p>
+          <p>EmptySlots:{el.maxNumOfSlots - el.currentNumOfBicycles}</p>
+          <p>Distance: {el.dist} Km</p>
         </div>
       );
     });
@@ -108,7 +104,6 @@ export default class App extends Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
-
           {markers}
         </Map>
       </div>
