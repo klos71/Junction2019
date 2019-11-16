@@ -58,7 +58,7 @@ public class BicycleStationService {
                 BicycleStation underloadedBicycleStation = underloadedStations.get(random.nextInt(underloadedStations.size()));
                 Mission mission = new Mission();
                 mission.setTitle("Take Bike here! -> " + underloadedBicycleStation.getName());
-                mission.setDescription("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it away and get 1000 Points!");
+                mission.setDescription("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it to " +underloadedBicycleStation.getName() + " and get 1000 Points!");
                 mission.setDestination(underloadedBicycleStation);
                 mission.setLonDestination(underloadedBicycleStation.getLon());
                 mission.setLatDestination(underloadedBicycleStation.getLat());
@@ -70,9 +70,9 @@ public class BicycleStationService {
             for (Mission m : assignedMissions) {
                 MissionDTO availableMission = MissionDTO.builder()
                         .id(m.getId())
-                        .title("Take Bike here! -> " + m.getTitle())
+                        .title(m.getTitle())
                         .score(m.getScore())
-                        .description("Bikes are everywhere at " + overloadedStation.getName() + "! Please take it away and get 1000 Points!")
+                        .description(m.getDescription())
                         .destination(m.getDestination())
                         .latDestination(m.getLatDestination())
                         .lonDestination(m.getLonDestination())
