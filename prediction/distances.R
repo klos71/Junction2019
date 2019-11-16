@@ -2,11 +2,11 @@
 # This function takes a dataframe that contains a column of all
 # the station ids called "id" and returns a dataframe with two
 # columns ("id1" and "id2") with all combinations of ids
-id_permutations <- function(stations, unused) {
+id_permutations <- function(stations, unused=NULL) {
 	combinations <- do.call(rbind, lapply(stations$id, function(id) {
 		data.frame(id1=id, id2=stations$id[stations$id != id])
 	}))
-	return(list(dataset1=combinations, dataset2=data.frame()))
+	return(list(dataset1=combinations))
 }
 
 
@@ -34,7 +34,7 @@ calculate_distances <- function(combinations, trips, dur_qt=0.75, dis_qt=0.2) {
 		"Duration" = durs[mask],
 		"Distance" = dists[mask],
 		check.names = FALSE
-	), dataset2=data.frame()))
+	)))
 }
 
 
@@ -46,6 +46,7 @@ if (sys.nframe() == 0L) {
 	trips <- read_data_trips()
 	dir.create("outputs", FALSE, FALSE)
 	write.csv(trips, "outputs/trips.csv", row.names = FALSE)
-	combs <- id_permutations(stations)
-	write.csv(combs, "outputs/combinations.csv", row.names = FALSE)
+	combs <- id_permutations(stations)[[1]]
+	dists <- calculate_distances(combs, trips)[[1]]
+	write.csv(dists, "outputs/distances.csv", row.names = FALSE)
 }
