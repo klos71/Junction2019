@@ -1,5 +1,6 @@
 package com.junction.bicycles.service;
 
+import com.junction.bicycles.model.BSExternal;
 import com.junction.bicycles.model.BicycleStation;
 import com.junction.bicycles.model.Mission;
 import com.junction.bicycles.repository.BicycleStationRepository;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -26,32 +29,40 @@ public class BicycleStationService {
         this.missionRepository = missionRepository;
     }
 
-    public List<BicycleStation> getAzurePredictionCall() {
+    //TODO Add predictions
+    public List<BSExternal> getAzurePredictions() {
+        return null;
+    }
+
+    public List<BicycleStation> createMissions() {
         List<BicycleStation> bicycleStationList = bicycleStationRepository.findAll();
 
-        bicycleStationList.stream()
+        List<BicycleStation> underloadedStations = bicycleStationList.stream()
                 .filter(this::getUnderloadedStation)
-                .forEach(b -> {
-                    for (Integer i = 0; i < 3; i++) {
-                        Mission mission = new Mission();
-                        mission.setTitle("Bring Bike here! -> " + b.getName());
-                        mission.setDescription("Bikes are missing at " + b.getName() + "! Please bring one and get 1000 Points!");
-                        mission.setBicycleStation(b);
-                        missionRepository.save(mission);
-                    }
-                });
+                .collect(Collectors.toList());
 
-        bicycleStationList.stream()
+        List<BicycleStation> overloadedStations = bicycleStationList.stream()
                 .filter(this::getOverloadedStations)
-                .forEach(b -> {
-                    for (Integer i = 0; i < 3; i++) {
-                        Mission mission = new Mission();
-                        mission.setTitle("Take Bike here! -> " + b.getName());
-                        mission.setDescription("Bikes are everywhere at " + b.getName() + "! Please take it away and get 1000 Points!");
-                        mission.setBicycleStation(b);
-                        missionRepository.save(mission);
-                    }
-                });
+                .collect(Collectors.toList());
+
+        overloadedStations.forEach(bicycleStation -> {
+            List<BicycleStation> underloadedBicycleMissions = new ArrayList<>();
+            Random random = new Random();
+            for (int i = 0; i < 2; i++) {
+                BicycleStation bsMission = overloadedStations.get(random.nextInt(overloadedStations.size()));
+                underloadedBicycleMissions.add(bsMission);
+            }
+
+            for (BicycleStation bsDestination : underloadedBicycleMissions) {
+                Mission mission = new Mission();
+                mission.setTitle("Take Bike From -> " + bicycleStation.getName());
+                mission.setDescription("There are a lot of bike around, please take it at " + bicycleStation.getName() + " and bring it to " + bsDestination.getName());
+                mission.setBicycleStationEntry(bicycleStation);
+                mission.setBicycleStationDestination(bsDestination);
+                missionRepository.save(mission);
+            }
+
+        });
 
         return bicycleStationList;
     }

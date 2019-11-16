@@ -18,7 +18,8 @@ public class BicycleStation {
     @OneToMany
     private List<Mission> missions;
 
-    public BicycleStation() {}
+    public BicycleStation() {
+    }
 
     public Long getId() {
         return id;

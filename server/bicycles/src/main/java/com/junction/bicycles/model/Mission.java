@@ -3,7 +3,7 @@ package com.junction.bicycles.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Mission {
@@ -13,9 +13,10 @@ public class Mission {
     private Long id;
     private String title;
     private String description;
-
-    @ManyToOne
-    private BicycleStation bicycleStation;
+    @OneToOne
+    private BicycleStation bicycleStationEntry;
+    @OneToOne
+    private BicycleStation bicycleStationDestination;
 
     public Long getId() {
         return id;
@@ -41,11 +42,19 @@ public class Mission {
         this.description = description;
     }
 
-    public BicycleStation getBicycleStation() {
-        return bicycleStation;
+    public BicycleStation getBicycleStationEntry() {
+        return bicycleStationEntry;
     }
 
-    public void setBicycleStation(BicycleStation bicycleStation) {
-        this.bicycleStation = bicycleStation;
+    public void setBicycleStationEntry(BicycleStation bicycleStationEntry) {
+        this.bicycleStationEntry = bicycleStationEntry;
+    }
+
+    public BicycleStation getBicycleStationDestination() {
+        return bicycleStationDestination;
+    }
+
+    public void setBicycleStationDestination(BicycleStation bicycleStationDestination) {
+        this.bicycleStationDestination = bicycleStationDestination;
     }
 }
