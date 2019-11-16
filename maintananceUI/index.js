@@ -84,7 +84,10 @@ app.get("/user/:user", (req, res) => {
       tokens: 0,
       score: 0,
       mission: 0,
-      doneEvents: []
+      doneEvents: [],
+      kal: 0,
+      km: 0,
+      time: 0
     });
     users.push({
       name: req.params.user,
@@ -92,7 +95,10 @@ app.get("/user/:user", (req, res) => {
       tokens: 0,
       score: 0,
       mission: 0,
-      doneEvents: []
+      doneEvents: [],
+      kal: 0,
+      km: 0,
+      time: 0
     });
   }
   fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
