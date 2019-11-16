@@ -5,24 +5,25 @@ import { Title } from "react-native-paper";
 
 export default class ScoreBoard extends Component {
   state = {
-    users: [
-      { name: "test", score: 0 },
-      { name: "test", score: 1 },
-      { name: "test", score: 2 },
-      { name: "test", score: 3 },
-      { name: "yes", score: 400 }
-    ]
+    users: []
   };
   constructor(props) {
     super(props);
   }
+  shouldComponentUpdate() {
+    return true;
+  }
 
   componentDidMount() {
-    let list = this.state.users;
-    list.sort((a, b) => {
-      return b.score - a.score;
-    });
-    this.setState({ users: list });
+    fetch("https://klosbook.klos71.net/users")
+      .then((res) => res.json())
+      .then((data) => {
+        let list = data;
+        list.sort((a, b) => {
+          return b.score - a.score;
+        });
+        this.setState({ users: list });
+      });
   }
 
   render() {

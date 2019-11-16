@@ -4,62 +4,71 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView
+  ScrollView,
+  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
-import { Title, Paragraph } from "react-native-paper";
+import { Title, Paragraph, Colors } from "react-native-paper";
 
 export default class Recent extends Component {
   state = {
-    missions: [
-      {
-        origin: "test station",
-        olat: 20,
-        olng: 60,
-        destination: "test2 station",
-        dlat: 21,
-        dlng: 61,
-        time: new Date(Date.now() - 10000)
-      },
-      {
-        origin: "test station",
-        olat: 20,
-        olng: 60,
-        destination: "test2 station",
-        dlat: 21,
-        dlng: 61,
-        time: new Date(Date.now())
-      },
-      {
-        origin: "test station",
-        olat: 20,
-        olng: 60,
-        destination: "test2 station",
-        dlat: 21,
-        dlng: 61,
-        time: new Date(Date.now() - 10000)
-      }
-    ]
+    missions: [],
+    user: null
   };
   constructor(props) {
     super(props);
   }
 
+  async componentWillMount() {
+    try {
+      const value = await AsyncStorage.getItem("user");
+      console.log(value);
+
+      if (value !== null) {
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            this.setState({ user: data });
+          });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  shouldComponentUpdate() {
+    return true;
+  }
+
   render() {
-    let missions = this.state.missions.map((el, index) => {
+    if (this.state.user !== null) {
+      let missions = this.state.user.doneEvents.map((el, index) => {
+        let date = new Date(Date.now());
+        return (
+          <TouchableOpacity key={index} style={styles.items}>
+            <Title>{el.orgStation}</Title>
+            <Title>{el.Dstation}</Title>
+            <Paragraph>Done: {date.toLocaleDateString()}</Paragraph>
+          </TouchableOpacity>
+        );
+      });
       return (
-        <TouchableOpacity key={index} style={styles.items}>
-          <Title>{el.origin}</Title>
-          <Title>{el.destination}</Title>
-          <Paragraph>Done: {el.time.toDateString()}</Paragraph>
-        </TouchableOpacity>
+        <ScrollView style={styles.container}>
+          <Title>Recent</Title>
+          {missions}
+        </ScrollView>
       );
-    });
-    return (
-      <ScrollView style={styles.container}>
-        <Title>Recent</Title>
-        {missions}
-      </ScrollView>
-    );
+    } else {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator
+            animating={true}
+            color={Colors.blue800}
+            size={"large"}
+          ></ActivityIndicator>
+        </View>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({

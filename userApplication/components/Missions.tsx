@@ -19,75 +19,14 @@ import * as Permissions from "expo-permissions";
 export default class Missions extends Component {
   state = {
     location: null,
-    missions: [
-      {
-        id: 0,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.1999949,
-        dlng: 24.8378988
-      },
-      {
-        id: 1,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 2,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 3,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 4,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 5,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.1979949,
-        dlng: 24.8378988
-      },
-      {
-        id: 6,
-        origin: "test station",
-        olat: 20,
-        olng: 60,
-        destination: "test2 station",
-        dlat: 21,
-        dlng: 61
-      }
-    ]
+    missions: []
   };
   constructor(props) {
     super(props);
     //console.log(props);
+  }
+  shouldComponentUpdate() {
+    return true;
   }
 
   async componentWillMount() {
@@ -95,6 +34,14 @@ export default class Missions extends Component {
     let location = await Location.getCurrentPositionAsync({});
     this.setState({ location });
     //console.log(location);
+  }
+  componentDidMount() {
+    fetch("https://klosbook.klos71.net/events")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.events);
+        this.setState({ missions: data.events });
+      });
   }
 
   _StartMission(mission) {
@@ -110,8 +57,8 @@ export default class Missions extends Component {
             style={styles.items}
             onPress={() => this._StartMission(el)}
           >
-            <Title>{el.origin}</Title>
-            <Title>{el.destination}</Title>
+            <Title>{el.orgStation}</Title>
+            <Title>{el.Dstation}</Title>
             <Paragraph>15 min</Paragraph>
           </TouchableOpacity>
         );

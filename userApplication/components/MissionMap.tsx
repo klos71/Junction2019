@@ -48,12 +48,12 @@ export default class MissionMap extends Component {
         //console.log(this.state.mission.olat);
         //console.log(this.state.mission.olng);
         origin = {
-          latitude: this.state.mission.olat,
-          longitude: this.state.mission.olng
+          latitude: this.state.mission.orgLat,
+          longitude: this.state.mission.orgLng
         };
         destination = {
-          latitude: this.state.mission.dlat,
-          longitude: this.state.mission.dlng
+          latitude: this.state.mission.Dlat,
+          longitude: this.state.mission.Dlong
         };
         //console.log(destination);
 

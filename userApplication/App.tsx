@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import Missions from "./components/Missions";
 import Recent from "./components/Recent";
 import ScoreBoard from "./components/ScoreBoard";
@@ -25,6 +25,7 @@ export default class App extends Component {
     user: null,
     userInput: null,
     index: 0,
+    timer: 0,
     routes: [
       { key: "home", title: "Home", icon: "home", color: "#0000ff" },
       {
@@ -48,9 +49,28 @@ export default class App extends Component {
   };
   _handleIndexChange = (index) => this.setState({ index });
   _handleMissionMap = (mission) => {
-    this.setState({ mission: mission });
     console.log(mission);
-    this._handleIndexChange(3);
+    fetch("https://klosbook.klos71.net/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        eventID: mission.eventID,
+        name: this.state.user,
+        event: mission
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          this.setState({ mission: mission });
+          console.log(mission);
+          this._handleIndexChange(3);
+        }
+      });
   };
 
   _returnMission() {
@@ -68,6 +88,9 @@ export default class App extends Component {
   MissionsRoute = () => (
     <Missions changeView={(index) => this._handleMissionMap(index)}></Missions>
   );
+  _timerCounter = (e) => {
+    this.setState({ timer: e });
+  };
 
   RecentsRoute = () => <Recent></Recent>;
 
@@ -75,7 +98,9 @@ export default class App extends Component {
 
   ProfileRoute = () => <Profile></Profile>;
 
-  StoreRoute = () => <Store></Store>;
+  StoreRoute = () => (
+    <Store timerCounter={(e) => this._timerCounter(e)}></Store>
+  );
 
   _renderScene = BottomNavigation.SceneMap({
     home: this.Home,
@@ -91,6 +116,8 @@ export default class App extends Component {
     try {
       const value = await AsyncStorage.getItem("user");
       if (value !== null) {
+        fetch("https://klosbook.klos71.net/user/" + value);
+
         this.setState({ user: value });
       }
     } catch (err) {

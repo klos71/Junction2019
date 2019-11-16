@@ -1,9 +1,25 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  AsyncStorage,
+  ActivityIndicator,
+  Alert
+} from "react-native";
 
-import { Title, Modal, Portal, Provider, Button } from "react-native-paper";
+import {
+  Title,
+  Modal,
+  Portal,
+  Provider,
+  Button,
+  Colors
+} from "react-native-paper";
 
 import QRCode from "react-native-qrcode-svg";
+import CountDown from "react-native-countdown-component";
 
 export default class Store extends Component {
   state = {
@@ -13,18 +29,48 @@ export default class Store extends Component {
       { name: "Fazer new Chocolate", cost: 40 }
     ],
     ShowCupons: false,
-    CuponName: "BussTicket"
+    CuponName: null,
+    user: null
   };
   constructor(props) {
     super(props);
   }
 
-  _toggleModal = () => {
-    this.setState({ ShowCupons: !this.state.ShowCupons });
-  };
+  async componentWillMount() {
+    try {
+      const value = await AsyncStorage.getItem("user");
+      console.log(value);
 
-  _reedemecupon = (text) => {
-    this.setState({ CuponName: text, ShowCupons: !this.state.ShowCupons });
+      if (value !== null) {
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            this.setState({ user: data });
+          });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  _toggleModal = () => {
+    if (this.state.CuponName === null) {
+      alert("You don't have any active cupons");
+    } else {
+      this.setState({ ShowCupons: !this.state.ShowCupons });
+    }
+  };
+  shouldComponentUpdate() {
+    return true;
+  }
+
+  _reedemecupon = (el) => {
+    if (this.state.user.tokens < el.cost) {
+      alert("To few tokens");
+    } else {
+      this.setState({ CuponName: el.name, ShowCupons: !this.state.ShowCupons });
+    }
   };
 
   render() {
@@ -33,38 +79,58 @@ export default class Store extends Component {
         <TouchableOpacity
           key={index}
           style={styles.items}
-          onPress={() => this._reedemecupon(el.name)}
+          onPress={() => this._reedemecupon(el)}
         >
           <Title>{el.name}</Title>
           <Text>Prize:{el.cost} tokens</Text>
         </TouchableOpacity>
       );
     });
-    return (
-      <View style={styles.container}>
-        <Title>Store Current Tokens: 15</Title>
-        <View>{storeList}</View>
-        <Button style={{ marginTop: 30 }} onPress={() => this._toggleModal()}>
-          Show Redeemed Cupons
-        </Button>
+    if (this.state.user !== null) {
+      return (
+        <View style={styles.container}>
+          <Title>
+            {this.state.user.name} Current Tokens: {this.state.user.tokens}
+          </Title>
+          <View>{storeList}</View>
+          <Button style={{ marginTop: 30 }} onPress={() => this._toggleModal()}>
+            Show Redeemed Cupons
+          </Button>
 
-        <Modal
-          visible={this.state.ShowCupons}
-          onDismiss={() => this._toggleModal()}
-        >
-          <View>
-            <View style={styles.modal}>
-              <Title>{this.state.CuponName}</Title>
-              <Text>Expires: 1H 29min</Text>
-              <QRCode
-                value='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
-                size={200}
-              ></QRCode>
+          <Modal
+            visible={this.state.ShowCupons}
+            onDismiss={() => this._toggleModal()}
+          >
+            <View>
+              <View style={styles.modal}>
+                <Title>{this.state.CuponName}</Title>
+                <CountDown
+                  until={4682}
+                  size={20}
+                  timeToShow={["H", "M", "S"]}
+                />
+                <View style={{ padding: 40 }}>
+                  <QRCode
+                    value='https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+                    size={300}
+                  ></QRCode>
+                </View>
+              </View>
             </View>
-          </View>
-        </Modal>
-      </View>
-    );
+          </Modal>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator
+            animating={true}
+            color={Colors.blue800}
+            size={"large"}
+          ></ActivityIndicator>
+        </View>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({

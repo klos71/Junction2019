@@ -16,23 +16,46 @@ export default class Profile extends Component {
     try {
       const value = await AsyncStorage.getItem("user");
       console.log(value);
+
       if (value !== null) {
-        this.setState({ user: value });
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            this.setState({ user: data });
+          });
       }
     } catch (err) {
       console.log(err);
     }
   }
 
+  shouldComponentUpdate() {
+    return true;
+  }
   render() {
-    return (
-      <View style={styles.container}>
-        <Title>{this.state.user}</Title>
-        <Paragraph>Missions done: 15</Paragraph>
-        <Paragraph>Score: 45</Paragraph>
-        <Paragraph>Tokens: 45</Paragraph>
-      </View>
-    );
+    if (this.state.user === null) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator
+            animating={true}
+            color={Colors.blue800}
+            size={"large"}
+          ></ActivityIndicator>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <Title>{this.state.user.name}</Title>
+          <Paragraph>
+            Missions done: {this.state.user.doneEvents.length}
+          </Paragraph>
+          <Paragraph>Score: {this.state.user.score}</Paragraph>
+          <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
+        </View>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({
