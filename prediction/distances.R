@@ -36,3 +36,16 @@ calculate_distances <- function(combinations, trips, dur_qt=0.75, dis_qt=0.2) {
 		check.names = FALSE
 	), dataset2=data.frame()))
 }
+
+
+# Only run from Rscript
+if (sys.nframe() == 0L) {
+	source("prediction/station_status.R")
+	source("prediction/predict_bikes.R")
+	stations <- read_data_stations(42)
+	trips <- read_data_trips()
+	dir.create("outputs", FALSE, FALSE)
+	write.csv(trips, "outputs/trips.csv", row.names = FALSE)
+	combs <- id_permutations(stations)
+	write.csv(trips, "outputs/combinations.csv", row.names = FALSE)
+}
