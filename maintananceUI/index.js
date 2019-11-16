@@ -128,6 +128,7 @@ app.post("/events", (req, res) => {
     ongoingEvenets.push({ name: name, event: reqEvent });
     res.json({ name: name, event: reqEvent });
     users.forEach((el) => {
+      console.log(el);
       if (name.name == el.name) {
         el.doneEvents.push(reqEvent);
       }

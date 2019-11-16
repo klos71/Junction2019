@@ -26,6 +26,7 @@ export default class App extends Component {
     userInput: null,
     index: 0,
     timer: 0,
+    updateIndex: 0,
     routes: [
       { key: "home", title: "Home", icon: "home", color: "#0000ff" },
       {
@@ -80,9 +81,10 @@ export default class App extends Component {
       getMission={() => this._returnMission()}
       mission={this.state.mission}
       changeView={(index) => this._handleIndexChange(index)}
+      forceAppUpdate={() => this._RefreshApplicationUI()}
     ></MissionMap>
   );
-  Home = () => <HomeComponent></HomeComponent>;
+  Home = () => <HomeComponent user={this.state.user}></HomeComponent>;
 
   MissionsRoute = () => (
     <Missions changeView={(index) => this._handleMissionMap(index)}></Missions>
@@ -111,14 +113,18 @@ export default class App extends Component {
     store: this.StoreRoute
   });
 
-  async componentWillMount() {
+  _RefreshApplicationUI() {
+    this.setState({ updateIndex: this.state.updateIndex + 1 });
+  }
+
+  async componentDidMount() {
     try {
       const value = await AsyncStorage.getItem("user");
       if (value !== null) {
         fetch("https://klosbook.klos71.net/user/" + value)
           .then((res) => res.json())
           .then((data) => {
-            this.setState({ user: data });
+            this.setState({ user: data, loading: false });
           });
       }
     } catch (err) {
@@ -134,11 +140,8 @@ export default class App extends Component {
     try {
       await AsyncStorage.setItem("user", user);
       console.log(user);
-      fetch("https://klosbook.klos71.net/user/" + user)
-        .then((res) => res.json())
-        .then((data) => {
-          this.setState({ user: data });
-        });
+
+      this.setState({ user: user });
     } catch (err) {
       console.log(err);
     }
@@ -164,7 +167,7 @@ export default class App extends Component {
       );
     } else {
       return (
-        <PaperProvider>
+        <PaperProvider key={this.state.updateIndex}>
           <BottomNavigation
             navigationState={this.state}
             onIndexChange={this._handleIndexChange}
