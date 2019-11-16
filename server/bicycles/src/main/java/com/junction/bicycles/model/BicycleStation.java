@@ -2,6 +2,8 @@ package com.junction.bicycles.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @Entity
 public class BicycleStation {
@@ -13,6 +15,9 @@ public class BicycleStation {
     private String lon;
     private Integer maxNumOfSlots;
     private Integer currentNumOfBicycles;
+
+    @OneToMany
+    private List<Mission> missions;
 
     public BicycleStation() {}
 
