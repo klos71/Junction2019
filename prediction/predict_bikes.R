@@ -30,8 +30,13 @@ bin_trip_times <- function(data) {
 }
 
 prepare_bins <- function() {
-	if (file.exists("outputs/binned.csv"))
-		return(as.matrix(read.csv("outputs/binned.csv")))
+	if (file.exists("outputs/binned.csv")) {
+		data <- read.csv("outputs/binned.csv", check.names = FALSE)
+		rn <- data[[""]]
+		data <- as.matrix(data[-1])
+		rownames(data) <- rn
+		return(data)
+	}
 	print("Reading trips")
 	data <- read.csv("outputs/trips.csv")
 	print("Binning trips")
@@ -41,11 +46,20 @@ prepare_bins <- function() {
 	binned
 }
 
-fit_simple_model <- function(data)
+fit_simple_model <- function(data) {
+	options(mc.cores = parallel::detectCores())
+	rstan_options(auto_write = TRUE)
+	n <- ncol(data) / (24 * 7 * 2)
+	rstan::stan("prediction/simple_model.stan", data = list(D=data, n=n))
+}
 
 
 # Only run from Rscript
 if (sys.nframe() == 0L) {
 	binned <- prepare_bins()
-
+	day <- "2019-09-25T00"
+	index <- which(colnames(binned) == day)
+	data <- binned[, (index - 24*7*12):(index - 1)]
+	fit <- fit_simple_model(data)
+	saveRDS(fit, "outputs/simple_model.rds")
 }
