@@ -9,8 +9,8 @@ public class BicycleStation {
     @Id
     private Long id;
     private String name;
-    private String lon;
     private String lat;
+    private String lon;
     private Integer maxNumOfSlots;
     private Integer currentNumOfBicycles;
 
