@@ -84,7 +84,7 @@ public class BicycleStationService {
                         .id(bicycleStation.getId())
                         .name(bicycleStation.getName())
                         .lat(bicycleStation.getLat())
-                        .lon(bicycleStation.getLng())
+                        .lng(bicycleStation.getLng())
                         .maxNumOfSlots(bicycleStation.getMaxNumOfSlots())
                         .currentNumOfBicycles(bicycleStation.getCurrentNumOfBicycles())
                         .missions(null)

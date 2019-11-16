@@ -14,7 +14,7 @@ public class BicycleStationDTO {
     private Long id;
     private String name;
     private String lat;
-    private String lon;
+    private String lng;
     private Integer maxNumOfSlots;
     private Integer currentNumOfBicycles;
 
