@@ -108,8 +108,9 @@ app.get("/user/:user", (req, res) => {
   console.log(req.params.user);
   var found = false;
   users.map((el) => {
-    if (el.user == req.params.user) {
-      res.jsonp(el);
+    console.log(users);
+    if (el.name == req.params.user) {
+      res.json(el);
       found = true;
     }
   });

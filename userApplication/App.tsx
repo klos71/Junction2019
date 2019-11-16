@@ -124,7 +124,11 @@ export default class App extends Component {
         fetch("https://klosbook.klos71.net/user/" + value)
           .then((res) => res.json())
           .then((data) => {
-            this.setState({ user: data, loading: false });
+            console.log(data);
+            if (data.error) {
+            } else {
+              this.setState({ user: data, loading: false });
+            }
           });
       }
     } catch (err) {
