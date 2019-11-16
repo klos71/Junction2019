@@ -56,6 +56,16 @@ var events = {
 
 var ongoingEvenets = [];
 
+if (fs.existsSync(__dirname + "/users.json")) {
+  var temp = fs.readFileSync(__dirname + "/users.json");
+  temp = JSON.parse(temp);
+  temp.forEach((user) => {
+    user.doneEvents.forEach((event) => {
+      ongoingEvenets.push({ name: user, event: event });
+    });
+  });
+}
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/client/build/index.html");
 });
