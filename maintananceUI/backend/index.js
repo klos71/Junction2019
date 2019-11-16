@@ -92,6 +92,10 @@ app.get("/user/:user", (req, res) => {
   fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
 });
 
+app.get("/users", (req, res) => {
+  res.jsonp(users);
+});
+
 app.get("/events", (req, res) => {
   res.json(events);
 });
