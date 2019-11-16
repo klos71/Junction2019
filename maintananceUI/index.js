@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
-
+app.use(express.static(path.join(__dirname, "client/build")));
 var users = [];
 if (fs.existsSync(__dirname + "/users.json")) {
   var temp = fs.readFileSync(__dirname + "/users.json");
@@ -55,6 +55,10 @@ var events = {
 };
 
 var ongoingEvenets = [];
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/client/build/index.html");
+});
 
 app.get("/stations", (req, res) => {
   fetch("http://137.135.248.74/api/stations")
