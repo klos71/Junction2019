@@ -79,14 +79,16 @@ app.get("/user/:user", (req, res) => {
       id: users.length,
       tokens: 0,
       score: 0,
-      mission: 0
+      mission: 0,
+      doneEvents: []
     });
     users.push({
       name: req.params.user,
       id: users.length,
       tokens: 0,
       score: 0,
-      mission: 0
+      mission: 0,
+      doneEvents: []
     });
   }
   fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
@@ -120,6 +122,11 @@ app.post("/events", (req, res) => {
     res.json({ error: "This event has already started", event: event });
   } else {
     ongoingEvenets.push(temp);
+    users.forEach((el) => {
+      if (el.name === name) {
+        el.doneEvents.push(temp);
+      }
+    });
     console.log(ongoingEvenets);
     res.json(temp);
   }
