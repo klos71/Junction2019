@@ -7,8 +7,8 @@ transformed data {
 	real vars[24*7];
 
 	for (i in 1:24*7) {
-		means[i] = mean(D[1:n, i])
-		vars[i] = sd(D[1:n, i])
+		means[i] = mean(D[1:n, i]);
+		vars[i] = sd(D[1:n, i]);
 	}
 }
 parameters {
@@ -19,6 +19,6 @@ transformed parameters {
 model {
 	B ~ normal(means, vars);
 	for (i in (n+1):(n*2)) {
-		D[i,] ~ normal(B, vars)
+		D[i,] ~ normal(B, vars);
 	}
 }
