@@ -40,13 +40,14 @@ public class Setup {
 
                 try {
                     BicycleStation newStation = new BicycleStation();
+                    Map<String, Object> parsedData = objectMapper.readValue((String) station.get("data"), Map.class);
+
                     newStation.setId(Long.parseLong((String) station.get("FID")));
                     newStation.setName((String) station.get("name"));
                     newStation.setLat((String) station.get("Y"));
                     newStation.setLon((String) station.get("X"));
-
                     newStation.setMaxNumOfSlots(Integer.parseInt((String) station.get("total_slot")));
-                    newStation.setCurrentNumOfBicycles(random.nextInt(newStation.getMaxNumOfSlots() + 1));
+                    newStation.setCurrentNumOfBicycles((Integer) parsedData.get("avl_bikes"));
 
                     bicycleStationRepository.save(newStation);
                 } catch (Exception ignore) {
