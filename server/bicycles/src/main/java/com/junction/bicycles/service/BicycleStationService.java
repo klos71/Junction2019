@@ -1,14 +1,15 @@
 package com.junction.bicycles.service;
 
-import com.junction.bicycles.model.BSExternal;
 import com.junction.bicycles.model.BicycleStation;
+import com.junction.bicycles.model.Mission;
 import com.junction.bicycles.repository.BicycleStationRepository;
+import com.junction.bicycles.repository.MissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class BicycleStationService {
@@ -17,31 +18,42 @@ public class BicycleStationService {
     private static final Integer CALCULATION_VAL_FOR_STATION = 20;
 
     private BicycleStationRepository bicycleStationRepository;
+    private MissionRepository missionRepository;
 
     @Autowired
-    public BicycleStationService(BicycleStationRepository bicycleStationRepository) {
+    public BicycleStationService(BicycleStationRepository bicycleStationRepository, MissionRepository missionRepository) {
         this.bicycleStationRepository = bicycleStationRepository;
+        this.missionRepository = missionRepository;
     }
 
+    public List<BicycleStation> getAzurePredictionCall() {
+        List<BicycleStation> bicycleStationList = bicycleStationRepository.findAll();
 
-    /**
-     * Get the future state of the current station
-     * @param bs to input
-     * @return the future object
-     */
-    /*public BicycleStation getThePredictionForTheCurrentStation(BicycleStation bs) {
+        bicycleStationList.stream()
+                .filter(this::getUnderloadedStation)
+                .forEach(b -> {
+                    for (Integer i = 0; i < 3; i++) {
+                        Mission mission = new Mission();
+                        mission.setTitle("Bring Bike here! -> " + b.getName());
+                        mission.setDescription("Bikes are missing at " + b.getName() + "! Please bring one and get 1000 Points!");
+                        mission.setBicycleStation(b);
+                        missionRepository.save(mission);
+                    }
+                });
 
-    }*/
+        bicycleStationList.stream()
+                .filter(this::getOverloadedStations)
+                .forEach(b -> {
+                    for (Integer i = 0; i < 3; i++) {
+                        Mission mission = new Mission();
+                        mission.setTitle("Take Bike here! -> " + b.getName());
+                        mission.setDescription("Bikes are everywhere at " + b.getName() + "! Please take it away and get 1000 Points!");
+                        mission.setBicycleStation(b);
+                        missionRepository.save(mission);
+                    }
+                });
 
-
-
-
-    //TODO Call the AZURE AND GET ALL THE Bicycles for the future +3 hours
-    private List<BSExternal> getAzurePredictionCall() {
-        //TODO Map JSON to Bicycle External Object
-        List<BSExternal> bicyclesPrediction = new ArrayList<>();
-
-        return bicyclesPrediction.stream().filter(this::getEmptyStation).collect(Collectors.toList());
+        return bicycleStationList;
     }
 
     /**
@@ -50,9 +62,19 @@ public class BicycleStationService {
      * @param e External Object
      * @return true if it is almost empty
      */
-    private boolean getEmptyStation(BSExternal e) {
-        int max = e.getMaxNumberOfBicycles();
-        int current = e.getNumberOfBicycles();
+    private boolean getOverloadedStations(BicycleStation e) {
+        return e.getCurrentNumOfBicycles() <= e.getMaxNumOfSlots();
+    }
+
+    /**
+     * percentage based calculation 20%
+     *
+     * @param e External Object
+     * @return true if it is almost empty
+     */
+    private boolean getUnderloadedStation(BicycleStation e) {
+        int max = e.getMaxNumOfSlots();
+        int current = e.getCurrentNumOfBicycles();
         int val = current * 100 / max;
         return val <= CALCULATION_VAL_FOR_STATION;
     }
