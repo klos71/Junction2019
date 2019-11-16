@@ -63,17 +63,19 @@ app.post("/events", (req, res) => {
   var eventID = req.body.eventID;
   var temp = { name: name, eventID: eventID };
   var found = false;
+  var event = null;
   events.events.forEach((el) => {
     ongoingEvenets.forEach((element) => {
       console.log(element.eventID);
       console.log(el.eventID);
       if (element.eventID === el.eventID) {
         found = true;
+        event = el;
       }
     });
   });
   if (found) {
-    res.json({ error: "This event has already started" });
+    res.json({ error: "This event has already started", event: event });
   } else {
     ongoingEvenets.push(temp);
     console.log(ongoingEvenets);
