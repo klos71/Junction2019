@@ -15,11 +15,12 @@ body {
 .alertContainer {
   overflow-y: scroll;
   background-color: white;
-  width: 200px;
+  width: 300px;
   max-height: 100vh;
   color: black;
   div {
     border: 1px solid black;
+    padding: 7px;
   }
   div:hover {
     background-color: black;

@@ -130,11 +130,21 @@ function getMissions() {
 }
 getMissions();
 
+
+
 app.get("/stations", (req, res) => {
+  var checkedIDS = [];
+  var response = [];
   fetch("http://137.135.248.74/api/stations")
     .then((res) => res.json())
     .then((data) => {
-      res.jsonp(data);
+      data.forEach((el) => {
+        if (!checkedIDS.includes(el.id)) {
+          checkedIDS.push(el.id);
+          response.push(el);
+        }
+      });
+      res.jsonp(response);
     });
 });
 

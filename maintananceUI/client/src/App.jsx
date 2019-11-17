@@ -19,7 +19,6 @@ export default class App extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
         //console.log(pos.coords);
-        this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       });
     }
     fetch("/stations")
@@ -28,17 +27,24 @@ export default class App extends Component {
         var temp = data;
         console.log(temp);
         temp.forEach((el) => {
-          el["lng"] = el.lon;
           el["dist"] = this._calculateDistance(
             { lat: el.lat, lng: el.lng },
             { lat: this.state.lat, lng: this.state.lng }
           ).toFixed(2);
+          el["predict"] = this.generatePredic();
         });
+        
         temp.sort(function(a, b) {
           return a.dist - b.dist;
         });
         this.setState({ markers: temp });
       });
+  }
+
+  generatePredic(){
+    var num = Math.floor(Math.random()*7) + 1;
+    num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+    return num;
   }
 
   focusOnStation(pos) {
@@ -73,6 +79,7 @@ export default class App extends Component {
           <Popup>
             Name: {el.name} <br /> EmptySlots:{" "}
             {el.maxNumOfSlots - el.currentNumOfBicycles}
+            predict in 1hour: {el.predict}
             <p>
               Distance: {el.dist}
               Km
@@ -90,7 +97,8 @@ export default class App extends Component {
           className='stationsList'
         >
           <p>Name: {el.name}</p>
-          <p>EmptySlots:{el.maxNumOfSlots - el.currentNumOfBicycles}</p>
+          <p>currentBikes:{el.currentNumOfBicycles}</p>
+          <p>predict in 1hour: {el.currentNumOfBicycles-el.predict}</p>
           <p>Distance: {el.dist} Km</p>
         </div>
       );
