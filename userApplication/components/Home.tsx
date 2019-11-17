@@ -27,13 +27,13 @@ export default class HomeComponent extends Component {
   async componentWillMount() {
     try {
       const value = await AsyncStorage.getItem("user");
-      console.log(value);
+      //console.log(value);
 
       if (value !== null) {
         fetch("https://klosbook.klos71.net/user/" + value)
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            //console.log(data);
             this.setState({ user: data });
           });
       }

@@ -67,7 +67,7 @@ export default class App extends Component {
           alert(data.error);
         } else {
           this.setState({ mission: mission });
-          console.log(mission);
+          //console.log(mission);
           this._handleIndexChange(3);
         }
       });
@@ -125,7 +125,7 @@ export default class App extends Component {
         fetch("https://klosbook.klos71.net/user/" + value)
           .then((res) => res.json())
           .then((data) => {
-            console.log(data);
+            //console.log(data);
             if (data.error) {
             } else {
               this.setState({ user: data, loading: false });
@@ -133,7 +133,7 @@ export default class App extends Component {
           });
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
@@ -144,7 +144,7 @@ export default class App extends Component {
   _storeData = async (user) => {
     try {
       await AsyncStorage.setItem("user", user);
-      console.log(user);
+      //console.log(user);
       fetch("https://klosbook.klos71.net/create/" + user)
         .then((res) => res.json())
         .then((data) => {

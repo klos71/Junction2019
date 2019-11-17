@@ -75,15 +75,15 @@ export default class MissionMap extends Component {
 
     if (this.state.location !== null) {
       if (this.state.mission !== null) {
-        //console.log(this.state.mission.olat);
+        console.log(this.state.mission);
         //console.log(this.state.mission.olng);
         origin = {
-          latitude: this.state.mission.orgLat,
-          longitude: this.state.mission.orgLng
+          latitude: this.state.mission.org.lat,
+          longitude: this.state.mission.org.lng
         };
         destination = {
-          latitude: this.state.mission.Dlat,
-          longitude: this.state.mission.Dlong
+          latitude: this.state.mission.dest.lat,
+          longitude: this.state.mission.dest.lng
         };
         //console.log(destination);
 

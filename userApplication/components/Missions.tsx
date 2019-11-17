@@ -40,7 +40,7 @@ export default class Missions extends Component {
       .then((res) => res.json())
       .then((data) => {
         console.log(data.events);
-        this.setState({ missions: data.events });
+        this.setState({ missions: data });
       });
   }
 
@@ -48,18 +48,57 @@ export default class Missions extends Component {
     this.props.changeView(mission);
   }
 
+  _calculateDistance(pos1, pos2) {
+    var R = 6371000; // km
+    var dLat = this.toRad(pos2.lat - pos1.lat);
+    var dLon = this.toRad(pos2.lng - pos1.lng);
+    var lat1 = this.toRad(pos1.lat);
+    var lat2 = this.toRad(pos2.lat);
+
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+
+    return d;
+  }
+  toRad(Value) {
+    return (Value * Math.PI) / 180;
+  }
+
   render() {
     if (this.state.location != null) {
-      let missions = this.state.missions.map((el, index) => {
+      console.log(this.state.location.coords);
+      let missionList = this.state.missions;
+      missionList.forEach((el) => {
+        el["dist"] = Math.round(
+          this._calculateDistance(
+            { lat: el.org.lat, lng: el.org.lng },
+            {
+              lat: this.state.location.coords.latitude,
+              lng: this.state.location.coords.longitude
+            }
+          )
+        );
+      });
+      missionList.sort((a, b) => {
+        return a.dist - b.dist;
+      });
+      let missions = missionList.map((el, index) => {
         return (
           <TouchableOpacity
             key={index}
             style={styles.items}
             onPress={() => this._StartMission(el)}
           >
-            <Title>{el.orgStation}</Title>
-            <Title>{el.Dstation}</Title>
-            <Paragraph>15 min</Paragraph>
+            <Title>{el.title}</Title>
+            <Title>From:{el.org.name}</Title>
+            <Paragraph>{el.desc}</Paragraph>
+
+            <Paragraph>
+              {el.score} points {el.dist} M
+            </Paragraph>
           </TouchableOpacity>
         );
       });

@@ -94,25 +94,30 @@ app.get("/", (req, res) => {
 });
 
 function getMissions() {
+  var checkedIDS = [];
   fetch("http://137.135.248.74/api/stations")
     .then((res) => res.json())
     .then((data) => {
       data.forEach((el) => {
-        if (el.missions !== null) {
-          el.missions.forEach((mis) => {
-            missions.push({
-              eventID: mis.id,
-              title: mis.title,
-              desc: mis.description,
-              score: mis.score,
-              dest: {
-                lat: mis.destination.lat,
-                lng: mis.destination.lng,
-                name: mis.destination.name
-              },
-              org: { lat: el.lat, lng: el.lng, name: el.name }
+        if (!checkedIDS.includes(el.id)) {
+          checkedIDS.push(el.id);
+
+          if (el.missions !== null) {
+            el.missions.forEach((mis) => {
+              missions.push({
+                eventID: mis.id,
+                title: mis.title,
+                desc: mis.description,
+                score: mis.score,
+                dest: {
+                  lat: mis.destination.lat,
+                  lng: mis.destination.lng,
+                  name: mis.destination.name
+                },
+                org: { lat: el.lat, lng: el.lng, name: el.name }
+              });
             });
-          });
+          }
         }
       });
       console.log("Missions loaded");
