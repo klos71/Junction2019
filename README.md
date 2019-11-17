@@ -1,18 +1,17 @@
-# Junction2019
-Junction 2019
-# BIKEBALANCE
+# BIKEBALANCE - Junction 2019
+## Problem: 
+Bike stations are often located where many people either get on or off them. This would leave many some stations full and others empty, which requires service men driving around the Helsinki region trying to balance the bike stations.
 
-# Problem: 
-Bike stations on locations where many people like to use a bike to get there and often take some other form of transportaion back requires service men driving around the city to try to balance the bike stations all around Helsink. What we thought about this was if there was a way for us to predict how bikes move around Helsinki and therefore create someway for servicemen to eficently see what stations are going to be empty and full, while also for the everyday person to be able to help via an app with "quests" and rewards to move around bikes saving in on usage of trains,busses,metro and also make the job for the servicemen easier.
+We thought that there is was a way for us to predict how the bikes move around,  and therefore create an UI for servicemen to see which stations are going to be empty and full (in the coming hours). We also envision that everyday people  would  be able to help via an app that gives "quests" and rewards for move around bikes and help with the balancing (gamifying the process). This save  on usage of trucks  going around balancing the stations, make the job for the servicemen easier, and provide exercise for citizens.
 
-# World Impact:
-With this application we can predict how station load thru the day and try to encurage the everyday person to use the bike more and save some on the climate! This application provided with a special "Maintenence-UI" will make the everyday work for service men around Helsinki easier by predicting when they are needed and where while also trying to offload some work on the quests that exists.
+## Social Impact
+With this application we can predict the stations' load throughout the day and try to encourage the citizens to use the bikes more (due to the higher availability of bikes) and save  the climate! This application provided with a special "[Maintenence-UI](https://klosbook.klos71.net)" will make the everyday work for service men around Helsinki easier by predicting when and where they are needed, while also trying to offload some work  through quests for normal people.
 
-# Tech
-With Ms Azure we have been able to train probability models that can calculate thru the day on how bike traffic is looking and with taht data our backend running on Azure is able to send the quests to our users to stop station overflowing and service men to intervine on predicted caos overflow much much faster
+## Tech
+With Ms Azure we have been able to train probabilistic models (R + stan) that can predict the hourly change of the number of bikes at each station. We also have a  backend (Java) server running on Azure is able to send the quests to our users to stop station overflowing. We also have an app (React native) for the citizens, that handles quests and awards, and a webpage for the maintenance (React js) that helps service men to intervene on predicted chaos much much faster
 
-# Future Plans
-This application could easily have the impact to encurage many users around Helsink to start biking more often and with the system of diffrent awards avaiable we can encurage users to go around and enjoy Helsink with tickets to muesums, are galleries, promotional campains by companies located in Helsink and more.
+## Future Plans
+This application could easily have the impact to encourage many users around Helsinki to start biking more often, and with the system of  awards available we can encourage users to enjoy Helsinki, e.g. with tickets to buses, museums,  promotional campaigns by companies located in Helsinki and more. This would preferably be integrated in the bigger HSL infrastructure, maybe as a sister app to the main HSL app.
 
 # Images
 ![alt text](https://github.com/klos71/Junction2019/raw/master/images/image1.jpeg  "Logo Title Text 1")
