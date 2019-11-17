@@ -36,6 +36,12 @@ public class BicycleStationService {
 
         List<BicycleStation> bicycleStationList = bicycleStationRepository.findAll();
 
+        List<Mission> allMissions = missionRepository.findAll();
+        if(allMissions.size() > 0) {
+            missionRepository.deleteAll();
+        }
+
+
         List<BicycleStationDTO> convertedStations = new ArrayList<>();
 
         List<BicycleStation> underloadedStations = bicycleStationList.stream()
