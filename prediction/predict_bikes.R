@@ -87,6 +87,7 @@ fit_weather_model <- function(data) {
 	vars <- vars * 0.9 + 0.2
 	dw <- read.csv("data/weather.csv")
 	dw <- as.matrix(scale(dw[1:(24*7*n),6:7]))
+	dw[is.na(dw)] <- 0
 	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars, W=dw)
 	rstan::stan("prediction/weather_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
 }
