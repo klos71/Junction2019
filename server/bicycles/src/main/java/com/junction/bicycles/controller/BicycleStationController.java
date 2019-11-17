@@ -1,6 +1,7 @@
 package com.junction.bicycles.controller;
 
 import com.junction.bicycles.dto.BicycleStationDTO;
+import com.junction.bicycles.repository.MissionRepository;
 import com.junction.bicycles.service.BicycleStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,8 @@ public class BicycleStationController {
 
     @Autowired
     private BicycleStationService bicycleStationService;
+    @Autowired
+    private MissionRepository missionRepository;
 
     @RequestMapping(value = "/stations", method = RequestMethod.GET)
     public List<BicycleStationDTO> allBicycleStations() {
