@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, AsyncStorage } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  AsyncStorage,
+  ActivityIndicator,
+  Image
+} from "react-native";
 
 import {
   Avatar,
@@ -7,7 +14,8 @@ import {
   Card,
   Title,
   Paragraph,
-  List
+  List,
+  Colors
 } from "react-native-paper";
 
 export default class HomeComponent extends Component {
@@ -19,54 +27,75 @@ export default class HomeComponent extends Component {
   async componentWillMount() {
     try {
       const value = await AsyncStorage.getItem("user");
-      console.log(value);
+      //console.log(value);
+
       if (value !== null) {
-        this.setState({ user: value });
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            //console.log(data);
+            this.setState({ user: data });
+          });
       }
     } catch (err) {
       console.log(err);
     }
   }
+
   _handlePress = () =>
     this.setState({
       expanded: !this.state.howTo
     });
   render() {
-    return (
-      <View style={styles.container}>
-        <Card>
-          <Card.Title
-            title={this.state.user}
-            subtitle='Bike Mover Supreme'
-          ></Card.Title>
-          <Card.Content>
-            <Paragraph>Missions completed</Paragraph>
-            <Paragraph>Score</Paragraph>
-            <Paragraph>Tokens </Paragraph>
-          </Card.Content>
-        </Card>
-        <List.Section>
-          <List.Accordion
-            title='How does it Work?'
-            left={(props) => (
-              <List.Icon {...props} icon='account-question-outline' />
-            )}
-          >
-            <List.Item
-              title='Missions'
-              description='Missions will show up in the missions tab for you to complete'
-            ></List.Item>
+    if (this.state.user !== null) {
+      return (
+        <View style={styles.container}>
+          <Card>
+            <Card.Title
+              title={this.state.user.name}
+              subtitle='Bike Mover Supreme'
+            ></Card.Title>
+            <Card.Content>
+              <Paragraph>
+                Missions completed: {this.state.user.doneEvents.length}
+              </Paragraph>
+              <Paragraph>Score: {this.state.user.score}</Paragraph>
+              <Paragraph>Tokens: {this.state.user.tokens} </Paragraph>
+            </Card.Content>
+          </Card>
+          <List.Section>
+            <List.Accordion
+              title='How does it Work?'
+              left={(props) => (
+                <List.Icon {...props} icon='account-question-outline' />
+              )}
+            >
+              <List.Item
+                title='Missions'
+                description='Missions will show up in the missions tab for you to complete'
+              ></List.Item>
 
-            <List.Item
-              title='Tokens: '
-              description='When you have completed missions you will get tokens, this
+              <List.Item
+                title='Tokens: '
+                description='When you have completed missions you will get tokens, this
                 tokens you can use to reedeme prizes in the store'
-              descriptionNumberOfLines={4}
-            ></List.Item>
-          </List.Accordion>
-        </List.Section>
-      </View>
-    );
+                descriptionNumberOfLines={4}
+              ></List.Item>
+            </List.Accordion>
+          </List.Section>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator
+            animating={true}
+            color={Colors.blue800}
+            size={"large"}
+          ></ActivityIndicator>
+        </View>
+      );
+    }
   }
 }
 const styles = StyleSheet.create({
