@@ -133,16 +133,24 @@ getMissions();
 
 
 app.get("/stations", (req, res) => {
+  var temp = fs.readFileSync(__dirname+"/predictions.json")
+  temp = JSON.parse(temp);
   var checkedIDS = [];
   var response = [];
   fetch("http://137.135.248.74/api/stations")
     .then((res) => res.json())
     .then((data) => {
       data.forEach((el) => {
-        if (!checkedIDS.includes(el.id)) {
-          checkedIDS.push(el.id);
-          response.push(el);
-        }
+        temp.forEach(pre=>{
+          if (!checkedIDS.includes(el.id)) {
+            if(pre.id === el.id){
+              el["predict"] = pre.delta;
+            }
+            checkedIDS.push(el.id);
+            response.push(el);
+          }
+        })
+        
       });
       res.jsonp(response);
     });

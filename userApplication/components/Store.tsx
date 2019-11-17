@@ -24,9 +24,9 @@ import CountDown from "react-native-countdown-component";
 export default class Store extends Component {
   state = {
     awards: [
-      { name: "BussTicket", cost: 10 },
-      { name: "MovieTicket", cost: 70 },
-      { name: "Fazer new Chocolate", cost: 40 }
+      { name: "BussTicket", cost: 100 },
+      { name: "MovieTicket", cost: 700 },
+      { name: "Fazer new Chocolate", cost: 400 }
     ],
     ShowCupons: false,
     CuponName: null,

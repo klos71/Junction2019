@@ -141,11 +141,20 @@ export default class MissionMap extends Component {
                   >
                     <View style={styles.container2}>
                       <Text style={styles.text}>CONGRATULATIONS!</Text>
-                      <Text style={styles.text}>Score: 15</Text>
-                      <Text style={styles.text}>Tokens: 3</Text>
-                      <Text style={styles.text}>Kalories Burnt: 15</Text>
-                      <Text style={styles.text}>Distance: 15</Text>
-                      <Text style={styles.text}>Time Spent: 15</Text>
+                      <Text style={styles.text}>
+                        Score: {this.state.mission.score}
+                      </Text>
+                      <Text style={styles.text}>
+                        Tokens: {this.state.mission.score / 10}
+                      </Text>
+                      <Text style={styles.text}>
+                        Calories Burnt:{" "}
+                        {Math.round((this.state.mission.dist / 100) * 24.59)}
+                      </Text>
+                      <Text style={styles.text}>
+                        Distance: {this.state.mission.dist / 100} Km
+                      </Text>
+                      <Text style={styles.text}>Time Spent: 15 min</Text>
                       <Button
                         onPress={() => this._dismissCompleteModal()}
                         mode='contained'

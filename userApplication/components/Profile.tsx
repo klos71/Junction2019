@@ -4,7 +4,8 @@ import {
   ActivityIndicator,
   Colors,
   Title,
-  Paragraph
+  Paragraph,
+  Card
 } from "react-native-paper";
 
 export default class Profile extends Component {
@@ -30,9 +31,6 @@ export default class Profile extends Component {
     }
   }
 
-  shouldComponentUpdate() {
-    return true;
-  }
   render() {
     if (this.state.user === null) {
       return (
@@ -47,16 +45,21 @@ export default class Profile extends Component {
     } else {
       return (
         <View style={styles.container}>
-          <Title>{this.state.user.name}</Title>
-          <Paragraph>
-            Missions done: {this.state.user.doneEvents.length}
-          </Paragraph>
-          <Paragraph>Score: {this.state.user.score}</Paragraph>
-          <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
-          <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
-          <Paragraph>Kalories burnt: {this.state.user.kal}</Paragraph>
-          <Paragraph>Km travled: {this.state.user.km}</Paragraph>
-          <Paragraph>Time spent moving: {this.state.user.time}</Paragraph>
+          <Card>
+            <Card.Title
+              title={this.state.user.name}
+              subtitle='Bike Mover Supreme'
+            ></Card.Title>
+            <Card.Content>
+              <Title>Missions done: {this.state.user.doneEvents.length}</Title>
+              <Title>Score: {this.state.user.score}</Title>
+              <Paragraph>Tokens: {this.state.user.tokens}</Paragraph>
+
+              <Paragraph>Calories burnt: {this.state.user.kal}</Paragraph>
+              <Paragraph>Distance travled: {this.state.user.km} Km</Paragraph>
+              <Paragraph>Time spent moving: {this.state.user.time} H</Paragraph>
+            </Card.Content>
+          </Card>
         </View>
       );
     }
@@ -66,7 +69,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+    //alignItems: "center",
     justifyContent: "center"
   }
 });
