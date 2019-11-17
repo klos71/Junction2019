@@ -58,7 +58,7 @@ fit_simple_model <- function(data) {
 	vars[is.na(vars)] <- 0.2
 	vars <- vars * 0.9 + 0.2
 	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars)
-	rstan::stan("prediction/simple_model.stan", data = sdata)
+	rstan::stan("prediction/simple_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
 }
 
 fit_trend_model <- function(data) {
@@ -72,7 +72,7 @@ fit_trend_model <- function(data) {
 	vars[is.na(vars)] <- 0.2
 	vars <- vars * 0.9 + 0.2
 	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars)
-	rstan::stan("prediction/simple_model.stan", data = sdata, chains=2, iter = 1000, thin = 2)
+	rstan::stan("prediction/trend_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
 }
 
 extract_fit <- function(fit, collab, rowlab) {
