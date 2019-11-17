@@ -92,7 +92,7 @@ fit_weather_model <- function(data) {
 	rstan::stan("prediction/weather_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
 }
 
-extract_fit <- function(fit, collab, rowlab) {
+extract_simple_fit <- function(fit, collab, rowlab) {
 	out <- extract(fit, c("lp__", "B"))
 	maxB <- out$B[which.max(out$lp__),,]
 	meanB <- apply(out$B, 2:3, mean)
@@ -104,6 +104,29 @@ extract_fit <- function(fit, collab, rowlab) {
 	B
 }
 
+extract_trend_fit <- function(fit, collab, rowlab) {
+	out <- extract(fit, c("lp__", "B", "trend"))
+	trend <- out$trend * 13.0 / 6.0 + 1
+	print("Overall trend:")
+	print(summary(trend))
+	B <- sweep(out$B, 1, trend, "*")
+	maxB <- B[which.max(out$lp__),,]
+	meanB <- apply(B, 2:3, mean)
+	sdB <- apply(B, 2:3, sd)
+	collab <- c(paste(collab, "mean"), paste(collab, "max"), paste(collab, "sd"))
+	B <- cbind(meanB, maxB, sdB)
+	colnames(B) <- collab
+	rownames(B) <- rowlab
+	B
+}
+
+extract_one_prediction <- function(file = "outputs/simple_model.csv", name="simple", cols=sprintf("2019-09-25T%02d mean", 16:18)) {
+	data <- read.csv(file, check.names = FALSE)
+	sel <- data[,cols]
+	sel <- apply(sel, 1, sum)
+	write.csv(data.frame(id = rownames(data), delta = sel), sprintf("outputs/predictions_%s.csv", name), row.names = FALSE)
+}
+
 
 # Only run from Rscript
 if (sys.nframe() == 0L) {
@@ -112,14 +135,18 @@ if (sys.nframe() == 0L) {
 	index <- which(colnames(binned) == day)
 	data <- binned[, (index - 24*7*12):(index - 1)]
 	### Weather Model ###
-	fit <- fit_weather_model(data)
-	saveRDS(fit, "outputs/weather_model.rds", compress="xz")
+	# fit <- fit_weather_model(data)
+	# saveRDS(fit, "outputs/weather_model.rds", compress="xz")
 	### Trend Model ###
-	# fit <- fit_trend_model(data)
-	# saveRDS(fit, "outputs/trend_model.rds", compress="xz")
+	fit <- fit_trend_model(data)
+	saveRDS(fit, "outputs/trend_model.rds", compress="xz")
+	model <- extract_trend_fit(fit, colnames(binned[, index:(index + 24*7 - 1)]), rownames(binned))
+	write.csv(model, "outputs/trend_model.csv")
+	extract_one_prediction("outputs/trend_model.csv", "trend")
 	### Simple Model ###
 	# fit <- fit_simple_model(data)
 	# saveRDS(fit, "outputs/simple_model.rds", compress="xz")
-	# model <- extract_fit(fit, colnames(binned[, index:(index + 24*7 - 1)]), rownames(binned))
+	# model <- extract_simple_fit(fit, colnames(binned[, index:(index + 24*7 - 1)]), rownames(binned))
 	# write.csv(model, "outputs/simple_model.csv")
+	# extract_one_prediction("outputs/simple_model.csv", "simple")
 }
