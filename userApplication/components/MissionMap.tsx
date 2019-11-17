@@ -68,6 +68,7 @@ export default class MissionMap extends Component {
 
     this.props.changeView(0);
     this.props.forceAppUpdate();
+    this.setState({ mission: null });
   }
   render() {
     let origin;

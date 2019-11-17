@@ -111,11 +111,15 @@ function getMissions() {
                 desc: mis.description,
                 score: mis.score,
                 dest: {
-                  lat: mis.destination.lat,
-                  lng: mis.destination.lng,
+                  lat: parseInt(mis.destination.lat),
+                  lng: parseInt(mis.destination.lng),
                   name: mis.destination.name
                 },
-                org: { lat: el.lat, lng: el.lng, name: el.name }
+                org: {
+                  lat: parseInt(el.lat),
+                  lng: parseInt(el.lng),
+                  name: el.name
+                }
               });
             });
           }
