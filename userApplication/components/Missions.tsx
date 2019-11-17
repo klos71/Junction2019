@@ -86,21 +86,23 @@ export default class Missions extends Component {
         return a.dist - b.dist;
       });
       let missions = missionList.map((el, index) => {
-        return (
-          <TouchableOpacity
-            key={index}
-            style={styles.items}
-            onPress={() => this._StartMission(el)}
-          >
-            <Title>{el.title}</Title>
-            <Title>From:{el.org.name}</Title>
-            <Paragraph>{el.desc}</Paragraph>
+        if (!el.done) {
+          return (
+            <TouchableOpacity
+              key={index}
+              style={styles.items}
+              onPress={() => this._StartMission(el)}
+            >
+              <Title>{el.title}</Title>
+              <Title>From:{el.org.name}</Title>
+              <Paragraph>{el.desc}</Paragraph>
 
-            <Paragraph>
-              {el.score} points {el.dist} M
-            </Paragraph>
-          </TouchableOpacity>
-        );
+              <Paragraph>
+                {el.score} points {el.dist} M
+              </Paragraph>
+            </TouchableOpacity>
+          );
+        }
       });
       return (
         <ScrollView style={styles.container}>

@@ -106,6 +106,7 @@ function getMissions() {
             el.missions.forEach((mis) => {
               missions.push({
                 eventID: mis.id,
+                done: false,
                 title: mis.title,
                 desc: mis.description,
                 score: mis.score,
@@ -197,6 +198,7 @@ app.post("/events", (req, res) => {
   } else {
     ongoingEvenets.push({ name: name, event: reqEvent });
     res.json({ name: name, event: reqEvent });
+    setMissionDone(reqEvent.eventID);
     users.forEach((el) => {
       console.log(el);
       if (name.name == el.name) {
@@ -218,5 +220,13 @@ app.post("/events", (req, res) => {
     fs.writeFileSync(__dirname + "/users.json", JSON.stringify(users));
   }
 });
+
+function setMissionDone(id) {
+  missions.forEach((el) => {
+    if (el.eventID === id) {
+      el.done = true;
+    }
+  });
+}
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
