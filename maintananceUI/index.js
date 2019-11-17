@@ -202,8 +202,8 @@ app.post("/events", (req, res) => {
       if (name.name == el.name) {
         dist = Math.round(
           _calculateDistance(
-            { lat: reqEvent.orgLat, lng: reqEvent.orgLng },
-            { lat: reqEvent.Dlat, lng: reqEvent.Dlong }
+            { lat: reqEvent.org.lat, lng: reqEvent.org.lng },
+            { lat: reqEvent.dest.lat, lng: reqEvent.dest.lng }
           )
         );
         el.score += reqEvent.score;

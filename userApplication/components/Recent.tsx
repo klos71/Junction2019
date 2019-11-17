@@ -46,8 +46,8 @@ export default class Recent extends Component {
         let date = new Date(Date.now());
         return (
           <TouchableOpacity key={index} style={styles.items}>
-            <Title>{el.orgStation}</Title>
-            <Title>{el.Dstation}</Title>
+            <Title>{el.title}</Title>
+            <Title>From:{el.org.name}</Title>
             <Paragraph>Done: {date.toLocaleDateString()}</Paragraph>
           </TouchableOpacity>
         );
