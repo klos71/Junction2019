@@ -31,7 +31,7 @@ export default class App extends Component {
             { lat: el.lat, lng: el.lng },
             { lat: this.state.lat, lng: this.state.lng }
           ).toFixed(2);
-          el["predict"] = this.generatePredic();
+         
         });
         
         temp.sort(function(a, b) {
@@ -79,7 +79,7 @@ export default class App extends Component {
           <Popup>
             Name: {el.name} <br /> EmptySlots:{" "}
             {el.maxNumOfSlots - el.currentNumOfBicycles}
-            predict in 1hour: {el.predict}
+            <br/>predict in 3hour: {el.predict.toFixed(0)}
             <p>
               Distance: {el.dist}
               Km
@@ -98,7 +98,7 @@ export default class App extends Component {
         >
           <p>Name: {el.name}</p>
           <p>currentBikes:{el.currentNumOfBicycles}</p>
-          <p>predict in 1hour: {el.currentNumOfBicycles-el.predict}</p>
+          <p>predict in 3hour: {(el.predict + el.currentNumOfBicycles).toFixed()}</p>
           <p>Distance: {el.dist} Km</p>
         </div>
       );

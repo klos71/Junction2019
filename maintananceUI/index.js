@@ -141,16 +141,16 @@ app.get("/stations", (req, res) => {
     .then((res) => res.json())
     .then((data) => {
       data.forEach((el) => {
-        temp.forEach(pre=>{
-          if (!checkedIDS.includes(el.id)) {
-            if(pre.id === el.id){
-              el["predict"] = pre.delta;
-            }
-            checkedIDS.push(el.id);
-            response.push(el);
-          }
-        })
         
+        if (!checkedIDS.includes(el.id)) {
+          checkedIDS.push(el.id);
+          temp.forEach(pre=>{
+            if(pre.id === el.id){
+              el["predict"] = pre.delta
+            }
+          })
+          response.push(el);
+        }
       });
       res.jsonp(response);
     });
