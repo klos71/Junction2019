@@ -13,3 +13,11 @@ With Ms Azure we have been able to train probability models that can calculate t
 
 # Future Plans
 This application could easily have the impact to encurage many users around Helsink to start biking more often and with the system of diffrent awards avaiable we can encurage users to go around and enjoy Helsink with tickets to muesums, are galleries, promotional campains by companies located in Helsink and more.
+
+# Images
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image1.jpeg  "Logo Title Text 1")
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image2.jpeg  "Logo Title Text 1")
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image3.jpeg  "Logo Title Text 1")
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image4.jpeg  "Logo Title Text 1")
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image5.jpeg  "Logo Title Text 1")
+![alt text](https://github.com/klos71/Junction2019/raw/master/images/image6.jpeg  "Logo Title Text 1")
