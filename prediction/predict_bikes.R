@@ -58,7 +58,50 @@ fit_simple_model <- function(data) {
 	vars[is.na(vars)] <- 0.2
 	vars <- vars * 0.9 + 0.2
 	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars)
-	rstan::stan("prediction/simple_model.stan", data = sdata)
+	rstan::stan("prediction/simple_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
+}
+
+fit_trend_model <- function(data) {
+	print("Fitting STAN model")
+	options(mc.cores = parallel::detectCores())
+	rstan_options(auto_write = TRUE)
+	n <- ncol(data) / (24 * 7 * 2)
+	means <- t(apply(data, 1, function(row) sapply(1:(24*7), function(i) mean(row[seq(i, ncol(data), 24*7)]))))
+	means[is.na(means)] <- 0
+	vars <- t(apply(data, 1, function(row) sapply(1:(24*7), function(i) sd(row[seq(i, ncol(data), 24*7)]))))
+	vars[is.na(vars)] <- 0.2
+	vars <- vars * 0.9 + 0.2
+	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars)
+	rstan::stan("prediction/trend_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
+}
+
+fit_weather_model <- function(data) {
+	print("Fitting STAN model")
+	options(mc.cores = parallel::detectCores())
+	rstan_options(auto_write = TRUE)
+	n <- ncol(data) / (24 * 7 * 2)
+	means <- t(apply(data, 1, function(row) sapply(1:(24*7), function(i) mean(row[seq(i, ncol(data), 24*7)]))))
+	means[is.na(means)] <- 0
+	vars <- t(apply(data, 1, function(row) sapply(1:(24*7), function(i) sd(row[seq(i, ncol(data), 24*7)]))))
+	vars[is.na(vars)] <- 0.2
+	vars <- vars * 0.9 + 0.2
+	dw <- read.csv("data/weather.csv")
+	dw <- t(as.matrix(scale(dw[1:(24*7*n),6:7])))
+	dw[is.na(dw)] <- 0
+	sdata <- list(D=data, w=n, s=nrow(data), means=means, vars=vars, W=dw)
+	rstan::stan("prediction/weather_model.stan", data = sdata, chains=4, iter = 1000, thin = 2)
+}
+
+extract_fit <- function(fit, collab, rowlab) {
+	out <- extract(fit, c("lp__", "B"))
+	maxB <- out$B[which.max(out$lp__),,]
+	meanB <- apply(out$B, 2:3, mean)
+	sdB <- apply(out$B, 2:3, sd)
+	collab <- c(paste(collab, "mean"), paste(collab, "max"), paste(collab, "sd"))
+	B <- cbind(meanB, maxB, sdB)
+	colnames(B) <- collab
+	rownames(B) <- rowlab
+	B
 }
 
 
@@ -68,6 +111,15 @@ if (sys.nframe() == 0L) {
 	day <- "2019-09-25T00"
 	index <- which(colnames(binned) == day)
 	data <- binned[, (index - 24*7*12):(index - 1)]
-	fit <- fit_simple_model(data)
-	saveRDS(fit, "outputs/simple_model.rds")
+	### Weather Model ###
+	fit <- fit_weather_model(data)
+	saveRDS(fit, "outputs/weather_model.rds", compress="xz")
+	### Trend Model ###
+	# fit <- fit_trend_model(data)
+	# saveRDS(fit, "outputs/trend_model.rds", compress="xz")
+	### Simple Model ###
+	# fit <- fit_simple_model(data)
+	# saveRDS(fit, "outputs/simple_model.rds", compress="xz")
+	# model <- extract_fit(fit, colnames(binned[, index:(index + 24*7 - 1)]), rownames(binned))
+	# write.csv(model, "outputs/simple_model.csv")
 }

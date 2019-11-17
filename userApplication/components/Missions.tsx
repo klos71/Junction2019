@@ -19,75 +19,14 @@ import * as Permissions from "expo-permissions";
 export default class Missions extends Component {
   state = {
     location: null,
-    missions: [
-      {
-        id: 0,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.1999949,
-        dlng: 24.8378988
-      },
-      {
-        id: 1,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 2,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 3,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 4,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.204543,
-        dlng: 24.811243
-      },
-      {
-        id: 5,
-        origin: "test station",
-        olat: 60.1899949,
-        olng: 24.8298988,
-        destination: "test2 station",
-        dlat: 60.1979949,
-        dlng: 24.8378988
-      },
-      {
-        id: 6,
-        origin: "test station",
-        olat: 20,
-        olng: 60,
-        destination: "test2 station",
-        dlat: 21,
-        dlng: 61
-      }
-    ]
+    missions: []
   };
   constructor(props) {
     super(props);
     //console.log(props);
+  }
+  shouldComponentUpdate() {
+    return true;
   }
 
   async componentWillMount() {
@@ -96,25 +35,74 @@ export default class Missions extends Component {
     this.setState({ location });
     //console.log(location);
   }
+  componentDidMount() {
+    fetch("https://klosbook.klos71.net/events")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.events);
+        this.setState({ missions: data });
+      });
+  }
 
   _StartMission(mission) {
     this.props.changeView(mission);
   }
 
+  _calculateDistance(pos1, pos2) {
+    var R = 6371000; // km
+    var dLat = this.toRad(pos2.lat - pos1.lat);
+    var dLon = this.toRad(pos2.lng - pos1.lng);
+    var lat1 = this.toRad(pos1.lat);
+    var lat2 = this.toRad(pos2.lat);
+
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c;
+
+    return d;
+  }
+  toRad(Value) {
+    return (Value * Math.PI) / 180;
+  }
+
   render() {
     if (this.state.location != null) {
-      let missions = this.state.missions.map((el, index) => {
-        return (
-          <TouchableOpacity
-            key={index}
-            style={styles.items}
-            onPress={() => this._StartMission(el)}
-          >
-            <Title>{el.origin}</Title>
-            <Title>{el.destination}</Title>
-            <Paragraph>15 min</Paragraph>
-          </TouchableOpacity>
+      console.log(this.state.location.coords);
+      let missionList = this.state.missions;
+      missionList.forEach((el) => {
+        el["dist"] = Math.round(
+          this._calculateDistance(
+            { lat: el.org.lat, lng: el.org.lng },
+            {
+              lat: this.state.location.coords.latitude,
+              lng: this.state.location.coords.longitude
+            }
+          )
         );
+      });
+      missionList.sort((a, b) => {
+        return a.dist - b.dist;
+      });
+      let missions = missionList.map((el, index) => {
+        if (!el.done) {
+          return (
+            <TouchableOpacity
+              key={index}
+              style={styles.items}
+              onPress={() => this._StartMission(el)}
+            >
+              <Title>{el.title}</Title>
+              <Title>From:{el.org.name}</Title>
+              <Paragraph>{el.desc}</Paragraph>
+
+              <Paragraph>
+                {el.score} points {el.dist} M
+              </Paragraph>
+            </TouchableOpacity>
+          );
+        }
       });
       return (
         <ScrollView style={styles.container}>

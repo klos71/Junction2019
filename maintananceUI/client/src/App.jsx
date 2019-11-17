@@ -19,24 +19,32 @@ export default class App extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
         //console.log(pos.coords);
-        this.setState({ lat: pos.coords.latitude, lng: pos.coords.longitude });
       });
     }
-    fetch("https://klosbook.klos71.net/stations")
+    fetch("/stations")
       .then((res) => res.json())
       .then((data) => {
         var temp = data;
+        console.log(temp);
         temp.forEach((el) => {
           el["dist"] = this._calculateDistance(
-            { lat: el.Y, lng: el.X },
+            { lat: el.lat, lng: el.lng },
             { lat: this.state.lat, lng: this.state.lng }
           ).toFixed(2);
+         
         });
+        
         temp.sort(function(a, b) {
           return a.dist - b.dist;
         });
         this.setState({ markers: temp });
       });
+  }
+
+  generatePredic(){
+    var num = Math.floor(Math.random()*7) + 1;
+    num *= Math.floor(Math.random()*2) == 1 ? 1 : -1;
+    return num;
   }
 
   focusOnStation(pos) {
@@ -67,9 +75,11 @@ export default class App extends Component {
     const position = [this.state.lat, this.state.lng];
     let markers = this.state.markers.map((el, index) => {
       return (
-        <Marker position={[el.Y, el.X]} key={index}>
+        <Marker position={[el.lat, el.lng]} key={index}>
           <Popup>
-            Name: {el.data.name} <br /> EmptySlots: {el.data.free_slots}
+            Name: {el.name} <br /> EmptySlots:{" "}
+            {el.maxNumOfSlots - el.currentNumOfBicycles}
+            <br/>predict in 3hour: {el.predict.toFixed(0)}
             <p>
               Distance: {el.dist}
               Km
@@ -83,19 +93,13 @@ export default class App extends Component {
       return (
         <div
           key={index}
-          onClick={() => this.focusOnStation([el.Y, el.X])}
+          onClick={() => this.focusOnStation([el.lat, el.lng])}
           className='stationsList'
         >
-          <p>Name: {el.data.name}</p>
-          <p>EmptySlots:{el.data.free_slots}</p>
-          <p>
-            Distance:{" "}
-            {this._calculateDistance(
-              { lat: el.Y, lng: el.X },
-              { lat: this.state.lat, lng: this.state.lng }
-            ).toFixed(2)}{" "}
-            Km
-          </p>
+          <p>Name: {el.name}</p>
+          <p>currentBikes:{el.currentNumOfBicycles}</p>
+          <p>predict in 3hour: {(el.predict + el.currentNumOfBicycles).toFixed()}</p>
+          <p>Distance: {el.dist} Km</p>
         </div>
       );
     });
@@ -108,7 +112,6 @@ export default class App extends Component {
             attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
-
           {markers}
         </Map>
       </div>

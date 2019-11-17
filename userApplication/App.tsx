@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import Missions from "./components/Missions";
 import Recent from "./components/Recent";
 import ScoreBoard from "./components/ScoreBoard";
@@ -25,6 +25,8 @@ export default class App extends Component {
     user: null,
     userInput: null,
     index: 0,
+    timer: 0,
+    updateIndex: 0,
     routes: [
       { key: "home", title: "Home", icon: "home", color: "#0000ff" },
       {
@@ -33,7 +35,7 @@ export default class App extends Component {
         icon: "trophy-award",
         color: "#0000ff"
       },
-      { key: "recents", title: "Recents", icon: "history", color: "#0000ff" },
+      { key: "recents", title: "History", icon: "history", color: "#0000ff" },
       { key: "map", title: "Map", icon: "map", color: "#0000ff" },
       {
         key: "scoreboard",
@@ -46,11 +48,29 @@ export default class App extends Component {
     ],
     mission: null
   };
-  _handleIndexChange = (index) => this.setState({ index });
+  _handleIndexChange = (index) =>
+    this.setState({ index: index, updateIndex: this.state.updateIndex + 1 });
   _handleMissionMap = (mission) => {
-    this.setState({ mission: mission });
-    console.log(mission);
-    this._handleIndexChange(3);
+    fetch("https://klosbook.klos71.net/events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: this.state.user,
+        event: mission
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          this.setState({ mission: mission });
+          //console.log(mission);
+          this._handleIndexChange(3);
+        }
+      });
   };
 
   _returnMission() {
@@ -61,13 +81,18 @@ export default class App extends Component {
     <MissionMap
       getMission={() => this._returnMission()}
       mission={this.state.mission}
+      changeView={(index) => this._handleIndexChange(index)}
+      forceAppUpdate={() => this._RefreshApplicationUI()}
     ></MissionMap>
   );
-  Home = () => <HomeComponent></HomeComponent>;
+  Home = () => <HomeComponent user={this.state.user}></HomeComponent>;
 
   MissionsRoute = () => (
     <Missions changeView={(index) => this._handleMissionMap(index)}></Missions>
   );
+  _timerCounter = (e) => {
+    this.setState({ timer: e });
+  };
 
   RecentsRoute = () => <Recent></Recent>;
 
@@ -75,7 +100,9 @@ export default class App extends Component {
 
   ProfileRoute = () => <Profile></Profile>;
 
-  StoreRoute = () => <Store></Store>;
+  StoreRoute = () => (
+    <Store timerCounter={(e) => this._timerCounter(e)}></Store>
+  );
 
   _renderScene = BottomNavigation.SceneMap({
     home: this.Home,
@@ -87,14 +114,26 @@ export default class App extends Component {
     store: this.StoreRoute
   });
 
-  async componentWillMount() {
+  _RefreshApplicationUI() {
+    this.setState({ updateIndex: this.state.updateIndex + 1 });
+  }
+
+  async componentDidMount() {
     try {
       const value = await AsyncStorage.getItem("user");
       if (value !== null) {
-        this.setState({ user: value });
+        fetch("https://klosbook.klos71.net/user/" + value)
+          .then((res) => res.json())
+          .then((data) => {
+            //console.log(data);
+            if (data.error) {
+            } else {
+              this.setState({ user: data, loading: false });
+            }
+          });
       }
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     let location = await Location.getCurrentPositionAsync({});
@@ -105,8 +144,12 @@ export default class App extends Component {
   _storeData = async (user) => {
     try {
       await AsyncStorage.setItem("user", user);
-      console.log(user);
-      this.setState({ user: user });
+      //console.log(user);
+      fetch("https://klosbook.klos71.net/create/" + user)
+        .then((res) => res.json())
+        .then((data) => {
+          this.setState({ user: data, loading: false });
+        });
     } catch (err) {
       console.log(err);
     }
@@ -132,11 +175,12 @@ export default class App extends Component {
       );
     } else {
       return (
-        <PaperProvider>
+        <PaperProvider key={this.state.updateIndex}>
           <BottomNavigation
             navigationState={this.state}
             onIndexChange={this._handleIndexChange}
             renderScene={this._renderScene}
+            key={this.state.updateIndex}
           />
         </PaperProvider>
       );
