@@ -4,6 +4,7 @@
 	Sources:
 	https://hri.fi/data/en_GB/dataset/hsl-n-kaupunkipyoraasemat
 	https://hri.fi/data/en_GB/dataset/helsingin-ja-espoon-kaupunkipyorilla-ajatut-matkat
+	https://en.ilmatieteenlaitos.fi/download-observations
 
 """
 from urllib.request import urlretrieve
@@ -33,6 +34,9 @@ def download_stations():
 	except:
 		print("Could not download", "stations-2019.csv")
 
+def download_weather():
+	#THIS LINK NEEDS TO BE UPDATED EACH TIME
+	urlretrieve("https://cdn.fmi.fi/fmiodata-convert-api/output/csv-c8eec4e9-70c8-4b8c-9fa6-5bf848fa4fbc.csv", "data/weather.csv")
 
 if __name__ == "__main__":
 	download_biketrips()
