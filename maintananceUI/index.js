@@ -111,13 +111,13 @@ function getMissions() {
                 desc: mis.description,
                 score: mis.score,
                 dest: {
-                  lat: parseInt(mis.destination.lat),
-                  lng: parseInt(mis.destination.lng),
+                  lat: parseFloat(mis.destination.lat),
+                  lng: parseFloat(mis.destination.lng),
                   name: mis.destination.name
                 },
                 org: {
-                  lat: parseInt(el.lat),
-                  lng: parseInt(el.lng),
+                  lat: parseFloat(el.lat),
+                  lng: parseFloat(el.lng),
                   name: el.name
                 }
               });
